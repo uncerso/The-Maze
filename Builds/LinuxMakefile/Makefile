@@ -68,9 +68,9 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS_APP := \
+  $(JUCE_OBJDIR)/CustomTimer_c5f35ab5.o \
   $(JUCE_OBJDIR)/MazeGenerator_c2124f35.o \
   $(JUCE_OBJDIR)/OpenGLDrawer_2c7f1b09.o \
-  $(JUCE_OBJDIR)/ButtonManager_80493dfc.o \
   $(JUCE_OBJDIR)/Application_d2fc77b1.o \
   $(JUCE_OBJDIR)/CentralComponent_ec650591.o \
   $(JUCE_OBJDIR)/main_8d1161a2.o \
@@ -94,6 +94,11 @@ $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : check-pkg-config $(OBJECTS_APP) $(RESOURCES)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(OBJECTS_APP) $(JUCE_LDFLAGS) $(JUCE_LDFLAGS_APP) $(RESOURCES) $(TARGET_ARCH)
 
+$(JUCE_OBJDIR)/CustomTimer_c5f35ab5.o: ../../Source/CustomTimer.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling CustomTimer.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/MazeGenerator_c2124f35.o: ../../Source/MazeGenerator.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MazeGenerator.cpp"
@@ -102,11 +107,6 @@ $(JUCE_OBJDIR)/MazeGenerator_c2124f35.o: ../../Source/MazeGenerator.cpp
 $(JUCE_OBJDIR)/OpenGLDrawer_2c7f1b09.o: ../../Source/OpenGLDrawer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling OpenGLDrawer.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ButtonManager_80493dfc.o: ../../Source/ButtonManager.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ButtonManager.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/Application_d2fc77b1.o: ../../Source/Application.cpp

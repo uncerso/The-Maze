@@ -149,9 +149,9 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\CustomTimer.cpp"/>
     <ClCompile Include="..\..\Source\MazeGenerator.cpp"/>
     <ClCompile Include="..\..\Source\OpenGLDrawer.cpp"/>
-    <ClCompile Include="..\..\Source\ButtonManager.cpp"/>
     <ClCompile Include="..\..\Source\Application.cpp"/>
     <ClCompile Include="..\..\Source\CentralComponent.cpp"/>
     <ClCompile Include="..\..\Source\main.cpp"/>
@@ -1350,12 +1350,13 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\CustomButton.h"/>
+    <ClInclude Include="..\..\Source\CustomTimer.h"/>
     <ClInclude Include="..\..\Source\MazeGenerator.h"/>
     <ClInclude Include="..\..\Source\OpenGLDrawer.h"/>
     <ClInclude Include="..\..\Source\Pair.h"/>
     <ClInclude Include="..\..\Source\Application.h"/>
     <ClInclude Include="..\..\Source\CentralComponent.h"/>
-    <ClInclude Include="..\..\Source\ButtonManager.h"/>
     <ClInclude Include="..\..\Source\MainForm.h"/>
     <ClInclude Include="..\..\Source\menu.h"/>
     <ClInclude Include="..\..\..\..\..\..\JUCE\modules\juce_core\containers\juce_AbstractFifo.h"/>

@@ -35,17 +35,18 @@ add_library( ${BINARY_NAME}
 
     SHARED
 
+    "../../../Source/CustomButton.h"
+    "../../../Source/CustomTimer.cpp"
+    "../../../Source/CustomTimer.h"
     "../../../Source/MazeGenerator.cpp"
     "../../../Source/MazeGenerator.h"
     "../../../Source/OpenGLDrawer.cpp"
     "../../../Source/OpenGLDrawer.h"
     "../../../Source/Pair.h"
-    "../../../Source/ButtonManager.cpp"
     "../../../Source/Application.cpp"
     "../../../Source/Application.h"
     "../../../Source/CentralComponent.cpp"
     "../../../Source/CentralComponent.h"
-    "../../../Source/ButtonManager.h"
     "../../../Source/main.cpp"
     "../../../Source/MainForm.cpp"
     "../../../Source/MainForm.h"
@@ -898,12 +899,13 @@ add_library( ${BINARY_NAME}
     "../../../JuceLibraryCode/JuceHeader.h"
 )
 
+set_source_files_properties("../../../Source/CustomButton.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/CustomTimer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/MazeGenerator.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/OpenGLDrawer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Pair.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Application.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/CentralComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/ButtonManager.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/MainForm.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/menu.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../../../../../JUCE/modules/juce_core/containers/juce_AbstractFifo.cpp" PROPERTIES HEADER_FILE_ONLY TRUE)

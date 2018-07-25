@@ -4,6 +4,9 @@
               version="0.1" cppLanguageStandard="latest">
   <MAINGROUP id="FGMXOG" name="TheMaze">
     <GROUP id="{6A4AFC3A-28E5-4E80-ACA7-FD3D901ADA7D}" name="Source">
+      <FILE id="dWXVV9" name="CustomButton.h" compile="0" resource="0" file="Source/CustomButton.h"/>
+      <FILE id="FyOBQs" name="CustomTimer.cpp" compile="1" resource="0" file="Source/CustomTimer.cpp"/>
+      <FILE id="W7EVWP" name="CustomTimer.h" compile="0" resource="0" file="Source/CustomTimer.h"/>
       <FILE id="gQa4r8" name="MazeGenerator.cpp" compile="1" resource="0"
             file="Source/MazeGenerator.cpp"/>
       <FILE id="Z209N9" name="MazeGenerator.h" compile="0" resource="0" file="Source/MazeGenerator.h"/>
@@ -11,15 +14,12 @@
             file="Source/OpenGLDrawer.cpp"/>
       <FILE id="jKAjOi" name="OpenGLDrawer.h" compile="0" resource="0" file="Source/OpenGLDrawer.h"/>
       <FILE id="vhexmb" name="Pair.h" compile="0" resource="0" file="Source/Pair.h"/>
-      <FILE id="uPx0t5" name="ButtonManager.cpp" compile="1" resource="0"
-            file="Source/ButtonManager.cpp"/>
       <FILE id="MtUdCq" name="Application.cpp" compile="1" resource="0" file="Source/Application.cpp"/>
       <FILE id="dGJ49k" name="Application.h" compile="0" resource="0" file="Source/Application.h"/>
       <FILE id="Awc72l" name="CentralComponent.cpp" compile="1" resource="0"
             file="Source/CentralComponent.cpp"/>
       <FILE id="HMsarp" name="CentralComponent.h" compile="0" resource="0"
             file="Source/CentralComponent.h"/>
-      <FILE id="CtjpK0" name="ButtonManager.h" compile="0" resource="0" file="Source/ButtonManager.h"/>
       <FILE id="kgQUVf" name="main.cpp" compile="1" resource="0" file="Source/main.cpp"/>
       <FILE id="wCCwLY" name="MainForm.cpp" compile="1" resource="0" file="Source/MainForm.cpp"/>
       <FILE id="Qw3vvf" name="MainForm.h" compile="0" resource="0" file="Source/MainForm.h"/>
@@ -36,10 +36,10 @@
         <MODULEPATH id="juce_core" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
@@ -51,10 +51,10 @@
         <MODULEPATH id="juce_core" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <ANDROIDSTUDIO targetFolder="Builds/Android">
@@ -66,10 +66,10 @@
         <MODULEPATH id="juce_core" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
       </MODULEPATHS>
     </ANDROIDSTUDIO>
   </EXPORTFORMATS>

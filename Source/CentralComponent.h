@@ -3,21 +3,25 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "menu.h"
 #include "OpenGLDrawer.h"
+#include "CustomButton.h"
 
 class CentralComponent
 	: public Component
 {
 public:
 	CentralComponent();
-	~CentralComponent();
+	~CentralComponent() = default;
 
 	void paint(Graphics&);
 	void resized();
 	
 private:
+#if JUCE_OPENGL
+	OpenGLContext openGLContext;
+#endif
 	OpenGLDrawer gld;
 	SidePanel sp;
-	TextButton button1;
+	CustomButton<TextButton> button1;
 
 	Label lb;
 

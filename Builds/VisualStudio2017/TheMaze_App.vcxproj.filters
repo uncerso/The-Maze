@@ -226,13 +226,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\CustomTimer.cpp">
+      <Filter>TheMaze\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MazeGenerator.cpp">
       <Filter>TheMaze\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\OpenGLDrawer.cpp">
-      <Filter>TheMaze\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ButtonManager.cpp">
       <Filter>TheMaze\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Application.cpp">
@@ -1539,6 +1539,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\CustomButton.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CustomTimer.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\MazeGenerator.h">
       <Filter>TheMaze\Source</Filter>
     </ClInclude>
@@ -1552,9 +1558,6 @@
       <Filter>TheMaze\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\CentralComponent.h">
-      <Filter>TheMaze\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ButtonManager.h">
       <Filter>TheMaze\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainForm.h">
