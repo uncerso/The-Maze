@@ -1,8 +1,13 @@
 #include "OpenGLDrawer.h"
+#include "MazeGenerator.h"
 
 OpenGLDrawer::OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz)
 	: openGLContext(openGLContext)
 	, frameCounter(0)
+	, glViewWidthInPixels(1)
+	, glViewHeightInPixels(1)
+	, shiftFromLeftSideInPixels(0)
+	, shiftFromBottomSideInPixels(0)
 {
 	jassert(openGLContext != nullptr);
 	openGLContext->setRenderer(this);
@@ -10,39 +15,47 @@ OpenGLDrawer::OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz)
 	timer.startTimerHz(frequencyHz);
 }
 
-OpenGLDrawer::~OpenGLDrawer() {
-	openGLContext->setRenderer(nullptr);
-}
-
 void OpenGLDrawer::newOpenGLContextCreated() {
 	createShaders();
 	shader->use();
 }
 
-void OpenGLDrawer::openGLContextClosing() {
+void OpenGLDrawer::openGLContextClosing() noexcept {
 	shader.reset();
 }
 
-void OpenGLDrawer::changeFrequency(int frequencyHz) {
+void OpenGLDrawer::changeFrequency(int frequencyHz) noexcept {
 	timer.stopTimer();
 	timer.startTimerHz(frequencyHz);
+}
+
+void OpenGLDrawer::setBounds(int shiftFromLeftSide, int shiftFromBottomSide, int parentWidthInPixels, int parentHeightInPixels) noexcept {
+	shiftFromLeftSideInPixels = shiftFromLeftSide;
+	shiftFromBottomSideInPixels = shiftFromBottomSide;
+	glViewWidthInPixels = parentWidthInPixels;
+	glViewHeightInPixels = parentHeightInPixels;
+}
+
+void OpenGLDrawer::updateUniformsAboutShiftsAndNormalize() const noexcept {
+	widthAndHeightToNormalize->set(static_cast<GLfloat>(glViewWidthInPixels), static_cast<GLfloat>(glViewHeightInPixels));
+	shiftsFromLeftBottomCorner->set(static_cast<GLfloat>(2.0 * shiftFromLeftSideInPixels / glViewWidthInPixels), static_cast<GLfloat>(2.0 * shiftFromBottomSideInPixels / glViewHeightInPixels));
 }
 
 void OpenGLDrawer::renderOpenGL() {
 	jassert(openGLContext->isActive());
 	++frameCounter;
-	OpenGLHelpers::clear(Colours::darkorange);
+	OpenGLHelpers::clear(Colours::black);
 	shader->use();
 	GLuint vao;
 	openGLContext->extensions.glGenBuffers(1, &vao);
 	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, vao);
-	openGLContext->extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(float) * a.size(), a.data(), GL_STREAM_DRAW);
-	openGLContext->extensions.glVertexAttribPointer(position->attributeID, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)0);
+	openGLContext->extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * a.size(), a.data(), GL_STREAM_DRAW);
+	openGLContext->extensions.glVertexAttribPointer(position->attributeID, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 	openGLContext->extensions.glEnableVertexAttribArray(position->attributeID);
 
-	auto fc = frameCounter * 0.05f;
-	color->set(cos(fc), sin(fc), sin(fc)*cos(fc));
-
+	auto t = frameCounter % tryColor.size();
+	color->set(tryColor[t].getRed() / 255.0f, tryColor[t].getGreen() / 255.0f, tryColor[t].getBlue() / 255.0f);
+	updateUniformsAboutShiftsAndNormalize();
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	openGLContext->extensions.glDisableVertexAttribArray(position->attributeID);
@@ -54,8 +67,10 @@ void OpenGLDrawer::createShaders() {
 	vertexShaderSource =
 		"#version 330\n"
 		"attribute vec2 position;\n"
+		"uniform vec2 widthAndHeightToNormalize;\n"
+		"uniform vec2 shiftsFromLeftBottomCorner;\n"
 		"void main(){\n"
-		"gl_Position=vec4(position.x, position.y, 0.0f, 1.0f);\n"
+		"gl_Position=vec4(2 * position.x / widthAndHeightToNormalize.x - 1 + shiftsFromLeftBottomCorner.x, 2 * position.y / widthAndHeightToNormalize.y - 1 + shiftsFromLeftBottomCorner.y, 0.0f, 1.0f);\n"
 		"}\0;";
 
 	fragmentShaderSource =
@@ -75,8 +90,11 @@ void OpenGLDrawer::createShaders() {
 		jassert(openGLContext->extensions.glGetAttribLocation(shader->getProgramID(), "position") >= 0);
 		position.reset(new OpenGLShaderProgram::Attribute(*shader, "position"));
 		color.reset(new OpenGLShaderProgram::Uniform(*shader, "color"));
+		widthAndHeightToNormalize.reset(new OpenGLShaderProgram::Uniform(*shader, "widthAndHeightToNormalize"));
+		shiftsFromLeftBottomCorner.reset(new OpenGLShaderProgram::Uniform(*shader, "shiftsFromLeftBottomCorner"));
 	}
 	else
 		std::cerr << newShader->getLastError();
 	color->set(0.1f, 0.1f, 0.1f);
+	updateUniformsAboutShiftsAndNormalize();
 }

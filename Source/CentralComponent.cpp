@@ -19,13 +19,15 @@ CentralComponent::CentralComponent()
 	openGLContext.attachTo(*this);
 }
 
-void CentralComponent::paint(Graphics&) {
-	//canvas.fillAll(Colour::fromRGB(210, 210, 210));
+CentralComponent::~CentralComponent() {
+	openGLContext.detach();
+	openGLContext.setRenderer(nullptr);
 }
 
+void CentralComponent::paint(Graphics&) {}
+
 void CentralComponent::resized() {
-	//	gld.setBounds(0, static_cast<int>(getHeight() * 0.05), getWidth(), static_cast<int>(getHeight() * 0.95));
+	gld.setBounds(50, 50, 200, 200);
 	button1.setBounds(0, 0, static_cast<int>(getWidth() * 0.05), static_cast<int>(getHeight() * 0.05));
 	lb.setBounds(static_cast<int>(getWidth() * 0.05), 0, static_cast<int>(getWidth() * 0.10), static_cast<int>(getHeight() * 0.05));
-	//grabKeyboardFocus();
 }

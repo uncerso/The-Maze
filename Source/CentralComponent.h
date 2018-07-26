@@ -10,7 +10,7 @@ class CentralComponent
 {
 public:
 	CentralComponent();
-	~CentralComponent() = default;
+	~CentralComponent();
 
 	void paint(Graphics&);
 	void resized();
