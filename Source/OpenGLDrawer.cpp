@@ -64,7 +64,10 @@ void OpenGLDrawer::renderOpenGL() {
 	jassert(openGLContext->isActive());
 	++frameCounter;
 
-	if (!shape) return;
+	if (!shape) {
+		OpenGLHelpers::clear(Colours::black);
+		return;
+	}
 
 	shader->use();
 	if (needInitVao) {
@@ -74,6 +77,7 @@ void OpenGLDrawer::renderOpenGL() {
 		openGLContext->swapBuffers();
 		OpenGLHelpers::clear(Colours::black);
 	}
+
 	if (!vao.has_value()) return;
 	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, vao.value());
 	openGLContext->extensions.glVertexAttribPointer(position->attributeID, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
