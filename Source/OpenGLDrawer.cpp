@@ -7,11 +7,13 @@ OpenGLDrawer::OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz)
 	, glViewHeightInPixels(1)
 	, shiftFromLeftSideInPixels(0)
 	, shiftFromBottomSideInPixels(0)
+	, frequencyHz(frequencyHz)
+	, needDrawNewIteration(false)
+	, needInitVao(false)
 {
 	jassert(openGLContext != nullptr);
 	openGLContext->setRenderer(this);
-	timer.setCallback([this] { this->openGLContext->triggerRepaint(); });
-	timer.startTimerHz(frequencyHz);
+	timer.setCallback([this] { needDrawNewIteration = true; this->openGLContext->triggerRepaint(); });
 }
 
 void OpenGLDrawer::newOpenGLContextCreated() {
@@ -23,9 +25,9 @@ void OpenGLDrawer::openGLContextClosing() noexcept {
 	shader.reset();
 }
 
-void OpenGLDrawer::changeFrequency(int frequencyHz) noexcept {
+void OpenGLDrawer::changeFrequency(int frequencyHz1) noexcept {
 	timer.stopTimer();
-	timer.startTimerHz(frequencyHz);
+	timer.startTimerHz(frequencyHz1);
 }
 
 void OpenGLDrawer::setBounds(int shiftFromLeftSide, int shiftFromBottomSide, int parentWidthInPixels, int parentHeightInPixels) noexcept {
@@ -42,27 +44,56 @@ void OpenGLDrawer::updateUniformsAboutShiftsAndNormalize() const noexcept {
 
 void OpenGLDrawer::loadData(std::unique_ptr<Shape> && shapeToDraw) {
 	shape = std::move(shapeToDraw);
+	needInitVao = true;
+	timer.startTimerHz(frequencyHz);
+}
+
+void OpenGLDrawer::initVao() {
+	jassert(openGLContext->isActive());
+	if (vao.has_value())
+		openGLContext->extensions.glDeleteBuffers(1, &vao.value());
+	else
+		vao.emplace();
+	openGLContext->extensions.glGenBuffers(1, &vao.value());
+	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, vao.value());
+	openGLContext->extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * shape->getRawDataSize(), shape->getRawData(), GL_STATIC_DRAW);
+	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void OpenGLDrawer::renderOpenGL() {
 	jassert(openGLContext->isActive());
 	++frameCounter;
-	OpenGLHelpers::clear(Colours::black);
+
+	if (!shape) return;
+
 	shader->use();
-	GLuint vao;
-	openGLContext->extensions.glGenBuffers(1, &vao);
-	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, vao);
-	openGLContext->extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * shape->getRawDataSize(), shape->getRawData(), GL_STREAM_DRAW);
+	if (needInitVao) {
+		initVao();
+		needInitVao = false;
+		OpenGLHelpers::clear(Colours::black);
+		openGLContext->swapBuffers();
+		OpenGLHelpers::clear(Colours::black);
+	}
+	if (!vao.has_value()) return;
+	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, vao.value());
 	openGLContext->extensions.glVertexAttribPointer(position->attributeID, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 	openGLContext->extensions.glEnableVertexAttribArray(position->attributeID);
-	
+
 	updateUniformsAboutShiftsAndNormalize();
-	
-	shape->draw(color.get());
+
+	OpenGLHelpers::clear(Colours::black);
+	shape->repeint(color.get());
+	if (needDrawNewIteration) {
+		if (shape->incrementDraw(color.get())) {
+			timer.stopTimer();
+			openGLContext->swapBuffers();
+			shape->incrementDraw(color.get());
+		}
+		needDrawNewIteration = false;
+	}
 
 	openGLContext->extensions.glDisableVertexAttribArray(position->attributeID);
 	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, 0);
-	openGLContext->extensions.glDeleteBuffers(1, &vao);
 }
 
 void OpenGLDrawer::createShaders() {

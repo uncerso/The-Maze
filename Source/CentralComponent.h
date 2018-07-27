@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "OpenGLDrawer.h"
 #include "CustomButton.h"
+#include "MazeGenerator.h"
 
 class CentralComponent
 	: public Component
@@ -23,7 +24,9 @@ private:
 	SidePanel sp;
 	CustomButton<TextButton> button1;
 
-	Label lb;
+	CustomButton<TextButton> shouldDraw;
+
+	MazeGenerator mazeGenerator;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CentralComponent)
 };

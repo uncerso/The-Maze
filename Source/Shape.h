@@ -11,7 +11,8 @@ public:
 	Shape & operator = (Shape const &) = default;
 	Shape & operator = (Shape &&) = default;
 
-	virtual void draw(OpenGLShaderProgram::Uniform *) = 0;
+	virtual bool incrementDraw(OpenGLShaderProgram::Uniform *) = 0;
+	virtual void repeint(OpenGLShaderProgram::Uniform *) = 0;
 	virtual const float * getRawData() const noexcept = 0;
 	virtual unsigned int getRawDataSize() const noexcept = 0;
 };

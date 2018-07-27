@@ -4,12 +4,13 @@
 #include "CustomTimer.h"
 #include "GreatColor.h"
 #include "Shape.h"
+#include <optional>
 
 class OpenGLDrawer
 	: private OpenGLRenderer
 {
 public:
-	OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz = 75);
+	OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz = 76);
 	~OpenGLDrawer() noexcept = default;
 
 	void changeFrequency(int frequencyHz) noexcept;
@@ -35,6 +36,11 @@ private:
 
 	std::unique_ptr<Shape> shape;
 
+	int frequencyHz;
+	std::atomic<bool> needDrawNewIteration;
+	std::atomic<bool> needInitVao;
+	std::optional<GLuint> vao;
+
 	void createShaders();
 
 	void newOpenGLContextCreated() override;
@@ -42,6 +48,8 @@ private:
 	void openGLContextClosing() noexcept override;
 
 	void updateUniformsAboutShiftsAndNormalize() const noexcept;
+
+	void initVao();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OpenGLDrawer)
 };
