@@ -1,5 +1,4 @@
 #include "OpenGLDrawer.h"
-#include "MazeGenerator.h"
 
 OpenGLDrawer::OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz)
 	: openGLContext(openGLContext)
@@ -41,6 +40,10 @@ void OpenGLDrawer::updateUniformsAboutShiftsAndNormalize() const noexcept {
 	shiftsFromLeftBottomCorner->set(static_cast<GLfloat>(2.0 * shiftFromLeftSideInPixels / glViewWidthInPixels), static_cast<GLfloat>(2.0 * shiftFromBottomSideInPixels / glViewHeightInPixels));
 }
 
+void OpenGLDrawer::loadData(std::unique_ptr<Shape> && shapeToDraw) {
+	shape = std::move(shapeToDraw);
+}
+
 void OpenGLDrawer::renderOpenGL() {
 	jassert(openGLContext->isActive());
 	++frameCounter;
@@ -49,14 +52,13 @@ void OpenGLDrawer::renderOpenGL() {
 	GLuint vao;
 	openGLContext->extensions.glGenBuffers(1, &vao);
 	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, vao);
-	openGLContext->extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * a.size(), a.data(), GL_STREAM_DRAW);
+	openGLContext->extensions.glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * shape->getRawDataSize(), shape->getRawData(), GL_STREAM_DRAW);
 	openGLContext->extensions.glVertexAttribPointer(position->attributeID, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 	openGLContext->extensions.glEnableVertexAttribArray(position->attributeID);
-
-	auto t = frameCounter % tryColor.size();
-	color->set(tryColor[t].getRed() / 255.0f, tryColor[t].getGreen() / 255.0f, tryColor[t].getBlue() / 255.0f);
+	
 	updateUniformsAboutShiftsAndNormalize();
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	
+	shape->draw(color.get());
 
 	openGLContext->extensions.glDisableVertexAttribArray(position->attributeID);
 	openGLContext->extensions.glBindBuffer(GL_ARRAY_BUFFER, 0);

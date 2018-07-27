@@ -149,6 +149,9 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\PointsToDraw.cpp"/>
+    <ClCompile Include="..\..\Source\PixelShape.cpp"/>
+    <ClCompile Include="..\..\Source\GreatColor.cpp"/>
     <ClCompile Include="..\..\Source\CustomTimer.cpp"/>
     <ClCompile Include="..\..\Source\MazeGenerator.cpp"/>
     <ClCompile Include="..\..\Source\OpenGLDrawer.cpp"/>
@@ -1350,6 +1353,11 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\PointsToDraw.h"/>
+    <ClInclude Include="..\..\Source\Color.h"/>
+    <ClInclude Include="..\..\Source\Shape.h"/>
+    <ClInclude Include="..\..\Source\PixelShape.h"/>
+    <ClInclude Include="..\..\Source\GreatColor.h"/>
     <ClInclude Include="..\..\Source\CustomButton.h"/>
     <ClInclude Include="..\..\Source\CustomTimer.h"/>
     <ClInclude Include="..\..\Source\MazeGenerator.h"/>

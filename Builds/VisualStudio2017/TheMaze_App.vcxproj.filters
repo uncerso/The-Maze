@@ -226,6 +226,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\PointsToDraw.cpp">
+      <Filter>TheMaze\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\PixelShape.cpp">
+      <Filter>TheMaze\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GreatColor.cpp">
+      <Filter>TheMaze\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\CustomTimer.cpp">
       <Filter>TheMaze\Source</Filter>
     </ClCompile>
@@ -1539,6 +1548,21 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\PointsToDraw.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Color.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shape.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\PixelShape.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GreatColor.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\CustomButton.h">
       <Filter>TheMaze\Source</Filter>
     </ClInclude>

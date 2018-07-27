@@ -4,6 +4,15 @@
               version="0.1" cppLanguageStandard="latest">
   <MAINGROUP id="FGMXOG" name="TheMaze">
     <GROUP id="{6A4AFC3A-28E5-4E80-ACA7-FD3D901ADA7D}" name="Source">
+      <FILE id="qhS3Cy" name="PointsToDraw.cpp" compile="1" resource="0"
+            file="Source/PointsToDraw.cpp"/>
+      <FILE id="a523Li" name="PointsToDraw.h" compile="0" resource="0" file="Source/PointsToDraw.h"/>
+      <FILE id="OkkaTN" name="Color.h" compile="0" resource="0" file="Source/Color.h"/>
+      <FILE id="ohzPiB" name="Shape.h" compile="0" resource="0" file="Source/Shape.h"/>
+      <FILE id="WbTfVu" name="PixelShape.cpp" compile="1" resource="0" file="Source/PixelShape.cpp"/>
+      <FILE id="xx3hCx" name="PixelShape.h" compile="0" resource="0" file="Source/PixelShape.h"/>
+      <FILE id="FlMAtK" name="GreatColor.cpp" compile="1" resource="0" file="Source/GreatColor.cpp"/>
+      <FILE id="l49dvb" name="GreatColor.h" compile="0" resource="0" file="Source/GreatColor.h"/>
       <FILE id="dWXVV9" name="CustomButton.h" compile="0" resource="0" file="Source/CustomButton.h"/>
       <FILE id="FyOBQs" name="CustomTimer.cpp" compile="1" resource="0" file="Source/CustomTimer.cpp"/>
       <FILE id="W7EVWP" name="CustomTimer.h" compile="0" resource="0" file="Source/CustomTimer.h"/>

@@ -68,6 +68,9 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS_APP := \
+  $(JUCE_OBJDIR)/PointsToDraw_f8f99cab.o \
+  $(JUCE_OBJDIR)/PixelShape_d98cf0c4.o \
+  $(JUCE_OBJDIR)/GreatColor_dfadbb5f.o \
   $(JUCE_OBJDIR)/CustomTimer_c5f35ab5.o \
   $(JUCE_OBJDIR)/MazeGenerator_c2124f35.o \
   $(JUCE_OBJDIR)/OpenGLDrawer_2c7f1b09.o \
@@ -93,6 +96,21 @@ $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : check-pkg-config $(OBJECTS_APP) $(RESOURCES)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(OBJECTS_APP) $(JUCE_LDFLAGS) $(JUCE_LDFLAGS_APP) $(RESOURCES) $(TARGET_ARCH)
+
+$(JUCE_OBJDIR)/PointsToDraw_f8f99cab.o: ../../Source/PointsToDraw.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PointsToDraw.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PixelShape_d98cf0c4.o: ../../Source/PixelShape.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PixelShape.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/GreatColor_dfadbb5f.o: ../../Source/GreatColor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling GreatColor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/CustomTimer_c5f35ab5.o: ../../Source/CustomTimer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)

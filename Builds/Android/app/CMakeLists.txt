@@ -35,6 +35,14 @@ add_library( ${BINARY_NAME}
 
     SHARED
 
+    "../../../Source/PointsToDraw.cpp"
+    "../../../Source/PointsToDraw.h"
+    "../../../Source/Color.h"
+    "../../../Source/Shape.h"
+    "../../../Source/PixelShape.cpp"
+    "../../../Source/PixelShape.h"
+    "../../../Source/GreatColor.cpp"
+    "../../../Source/GreatColor.h"
     "../../../Source/CustomButton.h"
     "../../../Source/CustomTimer.cpp"
     "../../../Source/CustomTimer.h"
@@ -899,6 +907,11 @@ add_library( ${BINARY_NAME}
     "../../../JuceLibraryCode/JuceHeader.h"
 )
 
+set_source_files_properties("../../../Source/PointsToDraw.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Color.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Shape.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/PixelShape.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/GreatColor.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/CustomButton.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/CustomTimer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/MazeGenerator.h" PROPERTIES HEADER_FILE_ONLY TRUE)

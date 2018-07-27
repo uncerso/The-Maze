@@ -1,6 +1,9 @@
 #pragma once
+
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CustomTimer.h"
+#include "GreatColor.h"
+#include "Shape.h"
 
 class OpenGLDrawer
 	: private OpenGLRenderer
@@ -12,6 +15,8 @@ public:
 	void changeFrequency(int frequencyHz) noexcept;
 
 	void setBounds(int shiftFromLeftSide, int shiftFromBottomSide, int parentWidthInPixels, int parentHeightInPixels) noexcept;
+
+	void loadData(std::unique_ptr<Shape> && shapeToDraw);
 
 private:
 	OpenGLContext * openGLContext;
@@ -28,7 +33,7 @@ private:
 	std::unique_ptr<OpenGLShaderProgram::Uniform> widthAndHeightToNormalize;
 	std::unique_ptr<OpenGLShaderProgram::Uniform> shiftsFromLeftBottomCorner;
 
-	std::vector<GLfloat> a = {0, 0, 50, 100, 100, 0};
+	std::unique_ptr<Shape> shape;
 
 	void createShaders();
 
