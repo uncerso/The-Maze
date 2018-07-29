@@ -35,6 +35,8 @@ add_library( ${BINARY_NAME}
 
     SHARED
 
+    "../../../Source/Triple.h"
+    "../../../Source/Menu.cpp"
     "../../../Source/PointsToDraw.cpp"
     "../../../Source/PointsToDraw.h"
     "../../../Source/Color.h"
@@ -43,7 +45,6 @@ add_library( ${BINARY_NAME}
     "../../../Source/PixelShape.h"
     "../../../Source/GreatColor.cpp"
     "../../../Source/GreatColor.h"
-    "../../../Source/CustomButton.h"
     "../../../Source/CustomTimer.cpp"
     "../../../Source/CustomTimer.h"
     "../../../Source/MazeGenerator.cpp"
@@ -58,7 +59,7 @@ add_library( ${BINARY_NAME}
     "../../../Source/main.cpp"
     "../../../Source/MainForm.cpp"
     "../../../Source/MainForm.h"
-    "../../../Source/menu.h"
+    "../../../Source/Menu.h"
     "../../../../../../../JUCE/modules/juce_core/containers/juce_AbstractFifo.cpp"
     "../../../../../../../JUCE/modules/juce_core/containers/juce_AbstractFifo.h"
     "../../../../../../../JUCE/modules/juce_core/containers/juce_Array.h"
@@ -907,12 +908,12 @@ add_library( ${BINARY_NAME}
     "../../../JuceLibraryCode/JuceHeader.h"
 )
 
+set_source_files_properties("../../../Source/Triple.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/PointsToDraw.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Color.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Shape.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/PixelShape.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/GreatColor.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/CustomButton.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/CustomTimer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/MazeGenerator.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/OpenGLDrawer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -920,7 +921,7 @@ set_source_files_properties("../../../Source/Pair.h" PROPERTIES HEADER_FILE_ONLY
 set_source_files_properties("../../../Source/Application.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/CentralComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/MainForm.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/menu.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Menu.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../../../../../JUCE/modules/juce_core/containers/juce_AbstractFifo.cpp" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../../../../../JUCE/modules/juce_core/containers/juce_AbstractFifo.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../../../../../JUCE/modules/juce_core/containers/juce_Array.h" PROPERTIES HEADER_FILE_ONLY TRUE)

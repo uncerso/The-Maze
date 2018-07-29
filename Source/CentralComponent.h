@@ -1,9 +1,8 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "menu.h"
+#include "Menu.h"
 #include "OpenGLDrawer.h"
-#include "CustomButton.h"
 #include "MazeGenerator.h"
 
 class CentralComponent
@@ -20,11 +19,11 @@ private:
 #if JUCE_OPENGL
 	OpenGLContext openGLContext;
 #endif
-	OpenGLDrawer gld;
+	OpenGLDrawer openGLDrawer;
 	SidePanel sp;
-	CustomButton<TextButton> button1;
+	TextButton button1;
 
-	CustomButton<TextButton> shouldDraw;
+	TextButton shouldDraw;
 
 	MazeGenerator mazeGenerator;
 

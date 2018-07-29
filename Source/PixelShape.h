@@ -12,7 +12,7 @@ class PixelShape
 public:
 	template <class T>
 	// func has type 'std::function<Color(unsigned int)>'
-	PixelShape(PointsToDraw && points, T && func);
+	PixelShape(PointsToDraw && points, T && func, bool oneFrame = false);
 	~PixelShape() = default;
 
 	bool incrementDraw(OpenGLShaderProgram::Uniform * color) override;
@@ -27,10 +27,12 @@ private:
 };
 
 template<class T>
-PixelShape::PixelShape(PointsToDraw && points, T && func)
+PixelShape::PixelShape(PointsToDraw && points, T && func, bool oneFrame)
 	: points(std::move(points))
 	, iteration(0)
 {
 	for (int i = 0; i < points.amountOfIntervals(); ++i)
 		colors.emplace_back(func(i));
+	if (oneFrame)
+		iteration = points.amountOfIntervals() - 1;
 }

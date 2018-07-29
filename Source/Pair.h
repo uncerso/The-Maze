@@ -17,7 +17,7 @@ Pair<T1, T2>::Pair(T1 const & fst, T2 const & snd)
 
 template <class T1, class T2>
 bool operator < (Pair<T1, T2> const & left, Pair<T1, T2> const & right) noexcept {
-	if (left.fst != right.fst)
+	if (left.fst == right.fst)
 		return left.snd < right.snd;
 	return left.fst < right.fst;
 }

@@ -5,7 +5,7 @@
 
 class MazeGenerator {
 public:
-	enum class MazeType { binaryTree, sidewinder };
+	enum class MazeType { binaryTree, sidewinder, noname };
 	enum class DrawType { oneFrame, wave, withWalls };
 
 	MazeGenerator();
@@ -34,6 +34,9 @@ private:
 	void oneFramePainting(std::vector<float> & data, std::vector<int> & intervals) const;
 	void wavePainting(int startX, int startY, std::vector<float> & data, std::vector<int> & intervals, bool withWalls) const;
 
+	int evenEdgeFiller(int width, int height);
+
 	int binaryTreeGenerator(int width, int height);
-	int sidewinderGenerator(int width, int height);
+	int sidewinderGenerator(int width, int height, int maxBlockSize);
+	int nonameGenerator(int width, int height, int startX, int startY);
 };
