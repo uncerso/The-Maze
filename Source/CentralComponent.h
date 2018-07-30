@@ -31,6 +31,8 @@ private:
 
 	//Configs
 	MazeGenerator::MazeType mazeType;
+	MazeGenerator::DrawType drawType;
+	bool instantDrawing;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CentralComponent)
 };
