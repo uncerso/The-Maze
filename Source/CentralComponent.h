@@ -15,17 +15,22 @@ public:
 	void paint(Graphics&);
 	void resized();
 	
+	std::unique_ptr<Menu> configureMenu();
+
 private:
 #if JUCE_OPENGL
 	OpenGLContext openGLContext;
 #endif
 	OpenGLDrawer openGLDrawer;
-	SidePanel sp;
+	SidePanel menuSidePanel;
 	TextButton button1;
 
 	TextButton shouldDraw;
 
 	MazeGenerator mazeGenerator;
+
+	//Configs
+	MazeGenerator::MazeType mazeType;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CentralComponent)
 };

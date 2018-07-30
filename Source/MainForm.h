@@ -9,11 +9,10 @@ class MainForm
 {
 public:
 	MainForm();
-	~MainForm() = default;
+	~MainForm();
 
 	void closeButtonPressed();
 private:
 	std::unique_ptr<CentralComponent> centralComponent;
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainForm)
+	std::unique_ptr<LookAndFeel> laf;
 };

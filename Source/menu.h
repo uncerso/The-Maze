@@ -1,22 +1,30 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include <vector>
 
 class Menu
 	: public Component
 {
 public:
-	Menu() {
+	Menu() = default;
 
+	void paint(Graphics & g) override;
+	void resized() override;
 
-	}
-
-	void paint(Graphics & /*canvas*/) override {
-	}
-
-	void resized() override {
-	}
+	template <class ...T>
+	void addGroup(T && ... args);
 
 private:
-	std::unique_ptr<MenuBarComponent> menuBar;
+	std::vector<std::vector<std::unique_ptr<Component> > > components;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Menu);
 };
+
+template <class ...T>
+inline void Menu::addGroup(T && ... args) {
+	(addAndMakeVisible(args.get()), ...);
+	std::vector<std::unique_ptr<Component> > a;
+	(a.emplace_back(std::forward<T>(args)), ...);
+	components.emplace_back(std::move(a));
+}

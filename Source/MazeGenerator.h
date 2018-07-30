@@ -37,6 +37,6 @@ private:
 	int evenEdgeFiller(int width, int height);
 
 	int binaryTreeGenerator(int width, int height);
-	int sidewinderGenerator(int width, int height, int maxBlockSize);
+	int sidewinderGenerator(int width, int height);
 	int nonameGenerator(int width, int height, int startX, int startY);
 };

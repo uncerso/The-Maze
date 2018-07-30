@@ -73,9 +73,6 @@ void OpenGLDrawer::renderOpenGL() {
 	if (needInitVao) {
 		initVao();
 		needInitVao = false;
-		OpenGLHelpers::clear(Colours::black);
-		openGLContext->swapBuffers();
-		OpenGLHelpers::clear(Colours::black);
 	}
 
 	if (!vao.has_value()) return;
@@ -88,11 +85,8 @@ void OpenGLDrawer::renderOpenGL() {
 	OpenGLHelpers::clear(Colours::black);
 	shape->repeint(color.get());
 	if (needDrawNewIteration) {
-		if (shape->incrementDraw(color.get())) {
+		if (shape->incrementDraw(color.get()))
 			timer.stopTimer();
-			openGLContext->swapBuffers();
-			shape->incrementDraw(color.get());
-		}
 		needDrawNewIteration = false;
 	}
 

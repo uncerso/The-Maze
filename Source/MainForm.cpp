@@ -5,15 +5,20 @@
 MainForm::MainForm() 
     : DocumentWindow(
 	    JUCEApplication::getInstance()->getApplicationName(),
-	    Colour::fromRGB(97, 90, 117),
+	    LookAndFeel_V4::getMidnightColourScheme().getUIColour(LookAndFeel_V4::ColourScheme::UIColour::windowBackground),
 	    allButtons)
+	, laf(new LookAndFeel_V4(LookAndFeel_V4::getMidnightColourScheme()))
 {
-	setColour(DocumentWindow::textColourId, Colour::fromRGB(177, 170, 197));
+	setLookAndFeel(laf.get());
 	centreWithSize(static_cast<int>(getParentWidth()*0.9), static_cast<int>(getParentHeight()*0.9));
 	setResizable(true, false);
 	setVisible(true);
 	centralComponent.reset(new CentralComponent());
 	setContentOwned(centralComponent.get(), false);
+}
+
+MainForm::~MainForm() {
+	setLookAndFeel(nullptr);
 }
 
 void MainForm::closeButtonPressed() {

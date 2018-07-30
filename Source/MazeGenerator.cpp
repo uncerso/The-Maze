@@ -34,7 +34,7 @@ void MazeGenerator::generate(int seed, int width, int height, MazeType mazeType)
 			amountOfInteriors = binaryTreeGenerator(width, height);
 			break;
 		case MazeType::sidewinder:
-			amountOfInteriors = sidewinderGenerator(width, height, 15);
+			amountOfInteriors = sidewinderGenerator(width, height);
 			break;
 		case MazeType::noname:
 			amountOfInteriors = nonameGenerator(width, height, 0, 0);
@@ -56,12 +56,12 @@ int MazeGenerator::evenEdgeFiller(int width, int height) {
 	if (!(width & 1)) {
 		for (int y = 0; y < height; y += 2)
 			matrix[y][width - 1] = State::interior;
-		ans += height / 2;
+		ans += (height + 1) / 2;
 	}
 	if (!(height & 1)) {
 		for (int x = 0; x < width; x += 2)
 			matrix[height - 1][x] = State::interior;
-		ans += width / 2;
+		ans += (width + 1) / 2;
 	}
 	return ans;
 }
@@ -188,7 +188,7 @@ int MazeGenerator::binaryTreeGenerator(int const width, int const height) {
 	return ((height + 1) >> 1) * (width + (width & 1)) - 1 + evenEdgeFiller(width, height);
 }
 
-int MazeGenerator::sidewinderGenerator(int width, int height, int /*maxBlockSize*/) {
+int MazeGenerator::sidewinderGenerator(int width, int height) {
 	for (int x = 0, xend = width - !(width & 1); x < xend; ++x)
 		matrix[0][x] = State::interior;
 
@@ -196,7 +196,6 @@ int MazeGenerator::sidewinderGenerator(int width, int height, int /*maxBlockSize
 		int leftOnTheCurrentY = (width + 1) >> 1;
 		int x = 0;
 		while (leftOnTheCurrentY > 0) {
-			//int blockSize = randomGenerator() % std::min(leftOnTheCurrentY, maxBlockSize) + 1; // this block will be interior
 			int blockSize = 1; // this block will be interior
 			while (blockSize != leftOnTheCurrentY && randomGenerator() & 1)
 				++blockSize;
