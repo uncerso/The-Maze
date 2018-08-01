@@ -1,25 +1,18 @@
 #include "PixelShape.h"
 
 bool PixelShape::incrementDraw(OpenGLShaderProgram::Uniform * color) {
-	if (iteration > 0) {
-		auto const & tmp = colors[iteration - 1];
+	if (iteration != points.amountOfIntervals()) {
+		auto const & tmp = colors[iteration];
 		color->set(tmp.red(), tmp.green(), tmp.blue());
-		auto const & temp = points[iteration - 1];
+		auto const & temp = points[iteration];
 		glDrawArrays(GL_POINTS, temp.fst, temp.snd);
-	}
-	auto const & tmp = colors[iteration];
-	color->set(tmp.red(), tmp.green(), tmp.blue());
-	auto const & temp = points[iteration];
-	glDrawArrays(GL_POINTS, temp.fst, temp.snd);
-
-	bool lastIteration = iteration + 1 == points.amountOfIntervals();
-	if (!lastIteration)
 		++iteration;
-	return lastIteration;
+	}
+	return iteration == points.amountOfIntervals();
 }
 
 void PixelShape::repeint(OpenGLShaderProgram::Uniform * color) {
-	for (int i = 0; i <= iteration; ++i) {
+	for (int i = 0; i < iteration; ++i) {
 		auto const & tmp = colors[i];
 		color->set(tmp.red(), tmp.green(), tmp.blue());
 		auto const & temp = points[i];

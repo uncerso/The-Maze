@@ -15,10 +15,12 @@ public:
 	template <class ...T>
 	void addGroup(T && ... args);
 
+	void addSeparatorLines();
+
 private:
 	std::vector<std::vector<std::unique_ptr<Component> > > components;
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Menu);
+	std::vector<int> nextSeparatorLines;
+	std::vector<int> heightsToDrawSeparatorLines;
 };
 
 template <class ...T>

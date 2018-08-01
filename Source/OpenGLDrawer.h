@@ -10,21 +10,24 @@ class OpenGLDrawer
 	: private OpenGLRenderer
 {
 public:
-	OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz = 76);
+	OpenGLDrawer(OpenGLContext * openGLContext, int delayInMs = 1);
 	~OpenGLDrawer() noexcept = default;
 
-	void changeFrequency(int frequencyHz) noexcept;
+	void changeFrequency(int delayInMs) noexcept;
 
-	void setBounds(int shiftFromLeftSide, int shiftFromBottomSide, int parentWidthInPixels, int parentHeightInPixels) noexcept;
+	void setBounds(int shiftFromLeftSide, int shiftFromBottomSide, float parentWidthInPixels, float parentHeightInPixels) noexcept;
 
 	void loadData(std::unique_ptr<Shape> && shapeToDraw);
 
+	void setPointSize(int size);
+
 private:
 	OpenGLContext * openGLContext;
-	int frameCounter;
+	std::atomic<int> lostFrameCounter;
 	CustomTimer timer;
-	int glViewWidthInPixels, glViewHeightInPixels;
+	float glViewWidthInPixels, glViewHeightInPixels;
 	int shiftFromLeftSideInPixels, shiftFromBottomSideInPixels;
+	int pointSize;
 
 	const GLchar * vertexShaderSource;
 	const GLchar * fragmentShaderSource;
@@ -36,8 +39,7 @@ private:
 
 	std::unique_ptr<Shape> shape;
 
-	int frequencyHz;
-	std::atomic<bool> needDrawNewIteration;
+	int timerFrequencyInMs;
 	std::atomic<bool> needInitVao;
 	std::optional<GLuint> vao;
 

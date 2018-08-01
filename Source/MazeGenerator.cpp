@@ -178,7 +178,7 @@ int MazeGenerator::binaryTreeGenerator(int const width, int const height) {
 		matrix[y][xend - 1] = State::interior;
 
 	for (int y = 2; y < height; y += 2)
-		for (int x = 0; x < width - 3; x += 2) {
+		for (int x = 0; x < width - 2; x += 2) {
 			matrix[y][x] = State::interior;
 			if (randomGenerator() & 1)
 				matrix[y - 1][x] = State::interior;

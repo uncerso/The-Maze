@@ -11,7 +11,7 @@ class PixelShape
 {
 public:
 	template <class T>
-	// func has type 'std::function<Color(unsigned int)>'
+	// func has type 'std::function<Color(unsigned int, unsigned int)>'
 	PixelShape(PointsToDraw && points, T && func, bool oneFrame = false);
 	~PixelShape() = default;
 
@@ -31,8 +31,8 @@ PixelShape::PixelShape(PointsToDraw && points, T && func, bool oneFrame)
 	: points(std::move(points))
 	, iteration(0)
 {
-	for (int i = 0; i < points.amountOfIntervals(); ++i)
-		colors.emplace_back(func(i));
+	for (int i = 0, iend = points.amountOfIntervals(); i < iend; ++i)
+		colors.emplace_back(func(i, iend));
 	if (oneFrame)
 		iteration = points.amountOfIntervals() - 1;
 }

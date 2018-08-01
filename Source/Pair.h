@@ -3,16 +3,25 @@
 template <class T1, class T2>
 struct Pair {
 	Pair() = default;
-	Pair(T1 const & fst, T2 const & snd);
-	
+
+	template <class U1, class U2>
+	Pair(U1 && fst, U2 && snd);
+
+	Pair(Pair && other) = default;
+	Pair(Pair const & other) = default;
+
+	Pair & operator = (Pair && other) = default;
+	Pair & operator = (Pair const & other) = default;
+
 	T1 fst;
 	T2 snd;
 };
 
-template <class T1, class T2>
-Pair<T1, T2>::Pair(T1 const & fst, T2 const & snd) 
-	: fst(fst)
-	, snd(snd)
+template<class T1, class T2>
+template<class U1, class U2>
+inline Pair<T1, T2>::Pair(U1 && fst, U2 && snd)
+	: fst(std::forward<U1>(fst))
+	, snd(std::forward<U2>(snd))
 {}
 
 template <class T1, class T2>

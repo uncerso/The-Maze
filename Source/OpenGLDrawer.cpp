@@ -1,19 +1,19 @@
 #include "OpenGLDrawer.h"
 
-OpenGLDrawer::OpenGLDrawer(OpenGLContext * openGLContext, int frequencyHz)
+OpenGLDrawer::OpenGLDrawer(OpenGLContext * openGLContext, int delayInMs)
 	: openGLContext(openGLContext)
-	, frameCounter(0)
+	, lostFrameCounter(0)
 	, glViewWidthInPixels(1)
 	, glViewHeightInPixels(1)
 	, shiftFromLeftSideInPixels(0)
 	, shiftFromBottomSideInPixels(0)
-	, frequencyHz(frequencyHz)
-	, needDrawNewIteration(false)
+	, pointSize(1)
+	, timerFrequencyInMs(delayInMs)
 	, needInitVao(false)
 {
 	jassert(openGLContext != nullptr);
 	openGLContext->setRenderer(this);
-	timer.setCallback([this] { needDrawNewIteration = true; this->openGLContext->triggerRepaint(); });
+	timer.setCallback([this] { ++lostFrameCounter; /*this->openGLContext->triggerRepaint(); */});
 }
 
 void OpenGLDrawer::newOpenGLContextCreated() {
@@ -25,12 +25,11 @@ void OpenGLDrawer::openGLContextClosing() noexcept {
 	shader.reset();
 }
 
-void OpenGLDrawer::changeFrequency(int frequencyHz1) noexcept {
-	timer.stopTimer();
-	timer.startTimerHz(frequencyHz1);
+void OpenGLDrawer::changeFrequency(int delayInMs) noexcept {
+	timerFrequencyInMs = delayInMs;
 }
 
-void OpenGLDrawer::setBounds(int shiftFromLeftSide, int shiftFromBottomSide, int parentWidthInPixels, int parentHeightInPixels) noexcept {
+void OpenGLDrawer::setBounds(int shiftFromLeftSide, int shiftFromBottomSide, float parentWidthInPixels, float parentHeightInPixels) noexcept {
 	shiftFromLeftSideInPixels = shiftFromLeftSide;
 	shiftFromBottomSideInPixels = shiftFromBottomSide;
 	glViewWidthInPixels = parentWidthInPixels;
@@ -39,13 +38,18 @@ void OpenGLDrawer::setBounds(int shiftFromLeftSide, int shiftFromBottomSide, int
 
 void OpenGLDrawer::updateUniformsAboutShiftsAndNormalize() const noexcept {
 	widthAndHeightToNormalize->set(static_cast<GLfloat>(glViewWidthInPixels), static_cast<GLfloat>(glViewHeightInPixels));
-	shiftsFromLeftBottomCorner->set(static_cast<GLfloat>(2.0 * shiftFromLeftSideInPixels / glViewWidthInPixels), static_cast<GLfloat>(2.0 * shiftFromBottomSideInPixels / glViewHeightInPixels));
+	shiftsFromLeftBottomCorner->set(static_cast<GLfloat>((2.0 * shiftFromLeftSideInPixels + 1) / glViewWidthInPixels), static_cast<GLfloat>((2.0 * shiftFromBottomSideInPixels + 1) / glViewHeightInPixels));
 }
 
 void OpenGLDrawer::loadData(std::unique_ptr<Shape> && shapeToDraw) {
 	shape = std::move(shapeToDraw);
 	needInitVao = true;
-	timer.startTimerHz(frequencyHz);
+	timer.startTimer(timerFrequencyInMs);
+	openGLContext->setContinuousRepainting(true);
+}
+
+void OpenGLDrawer::setPointSize(int size) {
+	pointSize = size;
 }
 
 void OpenGLDrawer::initVao() {
@@ -62,7 +66,6 @@ void OpenGLDrawer::initVao() {
 
 void OpenGLDrawer::renderOpenGL() {
 	jassert(openGLContext->isActive());
-	++frameCounter;
 
 	if (!shape) {
 		OpenGLHelpers::clear(Colours::black);
@@ -73,6 +76,7 @@ void OpenGLDrawer::renderOpenGL() {
 	if (needInitVao) {
 		initVao();
 		needInitVao = false;
+		glPointSize(static_cast<float>(pointSize));
 	}
 
 	if (!vao.has_value()) return;
@@ -84,10 +88,14 @@ void OpenGLDrawer::renderOpenGL() {
 
 	OpenGLHelpers::clear(Colours::black);
 	shape->repeint(color.get());
-	if (needDrawNewIteration) {
-		if (shape->incrementDraw(color.get()))
+	while (lostFrameCounter > 0) {
+		if (shape->incrementDraw(color.get())) {
 			timer.stopTimer();
-		needDrawNewIteration = false;
+			openGLContext->setContinuousRepainting(false);
+			lostFrameCounter = 0;
+			break;
+		}
+		--lostFrameCounter;
 	}
 
 	openGLContext->extensions.glDisableVertexAttribArray(position->attributeID);
