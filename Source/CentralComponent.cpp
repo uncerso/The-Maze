@@ -9,21 +9,34 @@ CentralComponent::CentralComponent()
 	, instantDrawing(false)
 	, pointSize(1)
 	, delayBetweenFramesGeneration(7)
+	, shouldTreadEnd(false)
+	, flag(false)
 {
 	menuButton.setButtonText("menu");
 	menuButton.onClick = [this] {menuSidePanel.showOrHide(!menuSidePanel.isPanelShowing()); };
 	addAndMakeVisible(menuButton);
 
-	shouldDraw.setButtonText("Draw");
-	shouldDraw.onClick = [this] {
-		auto const width = getWidth();
-		auto const height = getHeight();
-		mazeGenerator.generate(seed, width / pointSize, height / pointSize, mazeType);
-		openGLDrawer.setBounds(0, 0, static_cast<float>(width) / pointSize, static_cast<float>(height) / pointSize);
-		openGLDrawer.setPointSize(pointSize);
-		openGLDrawer.changeFrequency(delayBetweenFramesGeneration);
-		openGLDrawer.loadData(std::unique_ptr<Shape>(new PixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType), paintingMethod, instantDrawing)));
+	auto const runDrawing = [this] {
+		while (true) {
+			std::unique_lock<std::mutex> lk(mt);
+			cv.wait(lk, [this] {return flag; });
+			flag = false;
+			if (shouldTreadEnd) return;
+			auto const width = getWidth();
+			auto const height = getHeight();
+			auto const pntSize = pointSize.load();
+			mazeGenerator.generate(seed, width / pntSize, height / pntSize, mazeType);
+			openGLDrawer.setBounds(0, 0, static_cast<float>(width) / pntSize, static_cast<float>(height) / pntSize);
+			openGLDrawer.setPointSize(pntSize);
+			openGLDrawer.changeFrequency(delayBetweenFramesGeneration);
+			openGLDrawer.loadData(std::unique_ptr<Shape>(new PixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType), paintingMethod, instantDrawing)));
+			shouldDraw.setEnabled(true);
+		}
 	};
+	thrd = std::thread(runDrawing);
+
+	shouldDraw.setButtonText("Draw");
+	shouldDraw.onClick = [this] { shouldDraw.setEnabled(false); wakeUpTread(); };
 	addAndMakeVisible(shouldDraw);
 
 	auto configReturn = configureMenu();
@@ -35,8 +48,19 @@ CentralComponent::CentralComponent()
 }
 
 CentralComponent::~CentralComponent() {
+	shouldTreadEnd = true;
+	wakeUpTread();
+	thrd.join();
 	openGLContext.detach();
 	openGLContext.setRenderer(nullptr);
+}
+
+void CentralComponent::wakeUpTread() {
+	{
+		std::lock_guard<std::mutex> g(mt);
+		flag = true;
+	}
+	cv.notify_one();
 }
 
 void CentralComponent::paint(Graphics&) {}
@@ -64,7 +88,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		++radioGroupID;
 
 		auto lbAlg = make_unique<Label>();
-		lbAlg->setText("Choose algorithm:", NotificationType::dontSendNotification);
+		lbAlg->setText("Algorithm:", NotificationType::dontSendNotification);
 
 		auto b1Alg = make_unique<TextButton>();
 		b1Alg->setButtonText("Binary tree");
@@ -82,14 +106,21 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 
 		auto b3Alg = make_unique<TextButton>();
 		b3Alg->setButtonText("noname");
-		b3Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
+		b3Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b3Alg->setRadioGroupId(radioGroupID);
 		b3Alg->setClickingTogglesState(true);
 		b3Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::noname; };
 
+		auto b4Alg = make_unique<TextButton>();
+		b4Alg->setButtonText("Kruskal's");
+		b4Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
+		b4Alg->setRadioGroupId(radioGroupID);
+		b4Alg->setClickingTogglesState(true);
+		b4Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::kruskal; };
+
 		b1Alg->setToggleState(true, NotificationType::sendNotificationSync);
 
-		menu->addGroup(move(lbAlg), move(b1Alg), move(b2Alg), move(b3Alg));
+		menu->addGroup(move(lbAlg), move(b1Alg), move(b2Alg), move(b3Alg), move(b4Alg));
 		menu->addSeparatorLines();
 	}
 	//=========================================================================
@@ -97,25 +128,25 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		++radioGroupID;
 
 		auto lbDrawType = make_unique<Label>();
-		lbDrawType->setText("Choose draw type:", NotificationType::dontSendNotification);
+		lbDrawType->setText("Draw type:", NotificationType::dontSendNotification);
 
 		auto b1DrawType = make_unique<TextButton>();
 		b1DrawType->setButtonText("One frame");
-		b1DrawType->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnBottom);
+		b1DrawType->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b1DrawType->setRadioGroupId(radioGroupID);
 		b1DrawType->setClickingTogglesState(true);
 		b1DrawType->onClick = [this] {drawType = MazeGenerator::DrawType::oneFrame; };
 
 		auto b2DrawType = make_unique<TextButton>();
 		b2DrawType->setButtonText("Wave");
-		b2DrawType->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnTop | TextButton::ConnectedEdgeFlags::ConnectedOnBottom);
+		b2DrawType->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b2DrawType->setRadioGroupId(radioGroupID);
 		b2DrawType->setClickingTogglesState(true);
 		b2DrawType->onClick = [this] {drawType = MazeGenerator::DrawType::wave; };
 
 		auto b3DrawType = make_unique<TextButton>();
 		b3DrawType->setButtonText("Wave with repainting walls");
-		b3DrawType->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnTop);
+		b3DrawType->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
 		b3DrawType->setRadioGroupId(radioGroupID);
 		b3DrawType->setClickingTogglesState(true);
 		b3DrawType->onClick = [this] {drawType = MazeGenerator::DrawType::withWalls; };
@@ -130,11 +161,11 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		++radioGroupID;
 
 		auto lbColor = make_unique<Label>();
-		lbColor->setText("Choose painting method:", NotificationType::dontSendNotification);
+		lbColor->setText("Painting method:", NotificationType::dontSendNotification);
 
 		auto b1Color = make_unique<TextButton>();
 		b1Color->setButtonText("Gradient");
-		b1Color->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnBottom);
+		b1Color->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b1Color->setRadioGroupId(radioGroupID);
 		b1Color->setClickingTogglesState(true);
 		b1Color->onClick = [this] {
@@ -146,7 +177,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 
 		auto b2Color = make_unique<TextButton>();
 		b2Color->setButtonText("Rainbow");
-		b2Color->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnTop | TextButton::ConnectedEdgeFlags::ConnectedOnBottom);
+		b2Color->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
 		b2Color->setRadioGroupId(radioGroupID);
 		b2Color->setClickingTogglesState(true);
 		b2Color->onClick = [this] { paintingMethod = [this, gc = GreatColor()](int, int) mutable { return gc.getNextColor(pointSize - 1); }; };
@@ -170,6 +201,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		auto bSeed = make_unique<TextButton>();
 		bSeed->setButtonText("Generate randomly");
 		bSeed->onClick = [this, seedEditor = teSeed.get()]{ seedEditor->setText(String(randomDevice() % 1'000'000'000)); };
+		bSeed->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
 
 		bSeed->setToggleState(true, NotificationType::sendNotificationSync);
 
@@ -186,7 +218,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		sPaintSpeed->setTextValueSuffix(" pixels");
 		sPaintSpeed->onValueChange = [this, self = sPaintSpeed.get()]{ pointSize = static_cast<unsigned int>(self->getValue()); };
 		sPaintSpeed->setValue(pointSize);
-		functionsForReturn.emplace_back([this, sPS = sPaintSpeed.get()]{ sPS->setRange(1, min(getWidth(), getHeight()) / 7, 1); });
+		functionsForReturn.emplace_back([this, sPS = sPaintSpeed.get()]{ sPS->setRange(1, min(getWidth(), getHeight()) / 7, 1); pointSize = static_cast<unsigned int>(sPS->getValue()); });
 
 		menu->addGroup(move(lbPaintSpeed));
 		menu->addGroup(move(sPaintSpeed));
@@ -214,5 +246,5 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		menu->addGroup(move(bDrawingSpeed));
 	}
 
-	return { move(menu),[funcs = move(functionsForReturn)] {for (auto & foo : funcs) foo(); } };
+	return { move(menu),[funcs = move(functionsForReturn)] {for (auto & foo : funcs) foo(); } }; // menu && shouldCallWhenResized
 }

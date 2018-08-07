@@ -6,6 +6,7 @@
 #include "MazeGenerator.h"
 #include "Pair.h"
 #include <random>
+#include <mutex>
 
 class CentralComponent
 	: public Component
@@ -16,7 +17,7 @@ public:
 
 	void paint(Graphics&);
 	void resized();
-	
+
 	Pair<std::unique_ptr<Menu>, std::function<void()> > configureMenu();
 
 private:
@@ -30,19 +31,26 @@ private:
 	TextButton shouldDraw;
 
 	MazeGenerator mazeGenerator;
-	
+
 	std::random_device randomDevice;
 
 	std::function<void()> shouldCallWhenResized;
 
 	//Configs
-	MazeGenerator::MazeType mazeType;
-	MazeGenerator::DrawType drawType;
-	bool instantDrawing;
+	std::atomic<MazeGenerator::MazeType> mazeType;
+	std::atomic<MazeGenerator::DrawType> drawType;
+	std::atomic<bool> instantDrawing;
 	std::function<Color(int, int)> paintingMethod;
-	unsigned int seed;
-	unsigned int pointSize;
-	unsigned int delayBetweenFramesGeneration;
+	std::atomic<unsigned int> seed;
+	std::atomic<unsigned int> pointSize;
+	std::atomic<unsigned int> delayBetweenFramesGeneration;
+	std::mutex mt;
+	std::condition_variable cv;
+	std::atomic<bool> shouldTreadEnd;
+	bool flag;
+	std::thread thrd;
+
+	void wakeUpTread();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CentralComponent)
 };

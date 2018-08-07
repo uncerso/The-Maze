@@ -226,6 +226,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\DSU.cpp">
+      <Filter>TheMaze\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Menu.cpp">
       <Filter>TheMaze\Source</Filter>
     </ClCompile>
@@ -1551,7 +1554,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\DSU.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Triple.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Menu.h">
       <Filter>TheMaze\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\PointsToDraw.h">
@@ -1588,9 +1597,6 @@
       <Filter>TheMaze\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainForm.h">
-      <Filter>TheMaze\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Menu.h">
       <Filter>TheMaze\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\JUCE\modules\juce_core\containers\juce_AbstractFifo.h">

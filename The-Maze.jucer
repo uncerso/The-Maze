@@ -4,7 +4,10 @@
               version="0.1" cppLanguageStandard="latest">
   <MAINGROUP id="FGMXOG" name="TheMaze">
     <GROUP id="{6A4AFC3A-28E5-4E80-ACA7-FD3D901ADA7D}" name="Source">
+      <FILE id="sxUERJ" name="DSU.cpp" compile="1" resource="0" file="Source/DSU.cpp"/>
+      <FILE id="WL44vI" name="DSU.h" compile="0" resource="0" file="Source/DSU.h"/>
       <FILE id="cjYpVH" name="Triple.h" compile="0" resource="0" file="Source/Triple.h"/>
+      <FILE id="bd23EY" name="Menu.h" compile="0" resource="0" file="Source/Menu.h"/>
       <FILE id="e2zNOx" name="Menu.cpp" compile="1" resource="0" file="Source/Menu.cpp"/>
       <FILE id="qhS3Cy" name="PointsToDraw.cpp" compile="1" resource="0"
             file="Source/PointsToDraw.cpp"/>
@@ -33,7 +36,6 @@
       <FILE id="kgQUVf" name="main.cpp" compile="1" resource="0" file="Source/main.cpp"/>
       <FILE id="wCCwLY" name="MainForm.cpp" compile="1" resource="0" file="Source/MainForm.cpp"/>
       <FILE id="Qw3vvf" name="MainForm.h" compile="0" resource="0" file="Source/MainForm.h"/>
-      <FILE id="CeQO9N" name="Menu.h" compile="0" resource="0" file="Source/Menu.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

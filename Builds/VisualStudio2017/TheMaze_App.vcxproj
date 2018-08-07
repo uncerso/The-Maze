@@ -149,6 +149,7 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\DSU.cpp"/>
     <ClCompile Include="..\..\Source\Menu.cpp"/>
     <ClCompile Include="..\..\Source\PointsToDraw.cpp"/>
     <ClCompile Include="..\..\Source\PixelShape.cpp"/>
@@ -1354,7 +1355,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\DSU.h"/>
     <ClInclude Include="..\..\Source\Triple.h"/>
+    <ClInclude Include="..\..\Source\Menu.h"/>
     <ClInclude Include="..\..\Source\PointsToDraw.h"/>
     <ClInclude Include="..\..\Source\Color.h"/>
     <ClInclude Include="..\..\Source\Shape.h"/>
@@ -1367,7 +1370,6 @@
     <ClInclude Include="..\..\Source\Application.h"/>
     <ClInclude Include="..\..\Source\CentralComponent.h"/>
     <ClInclude Include="..\..\Source\MainForm.h"/>
-    <ClInclude Include="..\..\Source\Menu.h"/>
     <ClInclude Include="..\..\..\..\..\..\JUCE\modules\juce_core\containers\juce_AbstractFifo.h"/>
     <ClInclude Include="..\..\..\..\..\..\JUCE\modules\juce_core\containers\juce_Array.h"/>
     <ClInclude Include="..\..\..\..\..\..\JUCE\modules\juce_core\containers\juce_ArrayAllocationBase.h"/>

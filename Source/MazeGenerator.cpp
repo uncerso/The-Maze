@@ -2,7 +2,9 @@
 #include <queue>
 #include <map>
 #include <cassert>
+#include <algorithm>
 #include "Triple.h"
+#include "DSU.h"
 
 MazeGenerator::MazeGenerator()
 	: lastSeed(0)
@@ -24,7 +26,10 @@ void MazeGenerator::resizeMatrix(int width, int height) {
 		x.resize(width);
 }
 
-void MazeGenerator::generate(int seed, int width, int height, MazeType mazeType) {
+void MazeGenerator::generate(unsigned int seed, int width, int height, MazeType mazeType) {
+	assert(height > 0);
+	assert(width > 0);
+
 	if (seed == lastSeed && width == lastWidth && height == lastHeight && mazeType == lastMazeType) return;
 	randomGenerator = std::mt19937(seed);
 	resizeMatrix(width, height);
@@ -38,6 +43,9 @@ void MazeGenerator::generate(int seed, int width, int height, MazeType mazeType)
 			break;
 		case MazeType::noname:
 			amountOfInteriors = nonameGenerator(width, height, 0, 0);
+			break;
+		case MazeType::kruskal:
+			amountOfInteriors = kruskalGenerator(width, height);
 			break;
 		default: break;
 	}
@@ -67,6 +75,10 @@ int MazeGenerator::evenEdgeFiller(int width, int height) {
 }
 
 PointsToDraw MazeGenerator::getMazeAsPointsToDraw(DrawType drawType, int startX, int startY) const {
+	assert(lastHeight > 0);
+	assert(lastWidth > 0);
+	assert(insideMatrix(startX, startY));
+
 	std::vector<float> data;
 	std::vector<int> intervals;
 
@@ -243,6 +255,53 @@ int MazeGenerator::nonameGenerator(int width, int height, int startX, int startY
 			if (insideMatrix(newX, newY))
 				if (matrix[newY][newX] == State::wall)
 					priorityQueue.emplace(make_pair(randomGenerator(), Triple<int, int, uchar>(newY, newX, aroundPointsFrom[i])));
+		}
+	}
+
+	return ((height + 1) >> 1) * (width + (width & 1)) - 1 + evenEdgeFiller(width, height);
+}
+
+int MazeGenerator::kruskalGenerator(int width, int height) {
+	std::vector<Pair<int, int> > walls;
+
+	matrix[0][0] = State::interior;
+	for (int x = 2; x < width; x += 2) {
+		matrix[0][x] = State::interior;
+		walls.emplace_back(0, x - 1);
+	}
+	for (int y = 2; y < height; y += 2) {
+		matrix[y][0] = State::interior;
+		walls.emplace_back(y - 1, 0);
+	}
+	for (int y = 2; y < height; y += 2)
+		for (int x = 2; x < width; x += 2) {
+			matrix[y][x] = State::interior;
+			walls.emplace_back(y, x - 1);
+			walls.emplace_back(y - 1, x);
+		}
+
+	// random shuffle
+	for (int i = static_cast<int>(walls.size()); i > 1; --i)
+		std::swap(walls[i - 1], walls[randomGenerator() % i]);
+
+	auto linearNumber = [rowSize = (width + 1) >> 1](int y, int x) {return (y >> 1) * rowSize + (x >> 1); };
+	DSU dsu(((width + 1) >> 1) * ((height + 1) >> 1));
+
+	for (auto & el : walls) {
+		int first, second;
+		if (el.fst & 1) {
+			// vertical connection
+			first = dsu.find(linearNumber(el.fst - 1, el.snd));
+			second = dsu.find(linearNumber(el.fst + 1, el.snd));
+		}
+		else {
+			// horizontal connection
+			first = dsu.find(linearNumber(el.fst, el.snd - 1));
+			second = dsu.find(linearNumber(el.fst, el.snd + 1));
+		}
+		if (first != second) {
+			dsu.merge(first, second);
+			matrix[el.fst][el.snd] = State::interior;
 		}
 	}
 

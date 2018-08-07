@@ -5,20 +5,20 @@
 
 class MazeGenerator {
 public:
-	enum class MazeType { binaryTree, sidewinder, noname };
+	enum class MazeType { binaryTree, sidewinder, noname, kruskal };
 	enum class DrawType { oneFrame, wave, withWalls };
 
 	MazeGenerator();
 	~MazeGenerator() = default;
 
-	void generate(int seed, int width, int height, MazeType mazeType);
+	void generate(unsigned int seed, int width, int height, MazeType mazeType);
 
 	PointsToDraw getMazeAsPointsToDraw(DrawType drawType, int startX = 0, int startY = 0) const;
 
 private:
 	enum class State { wall, interior, markedWall, markedInterior};
 
-	int lastSeed;
+	unsigned int lastSeed;
 	int lastWidth;
 	int lastHeight;
 	int amountOfInteriors;
@@ -39,4 +39,5 @@ private:
 	int binaryTreeGenerator(int width, int height);
 	int sidewinderGenerator(int width, int height);
 	int nonameGenerator(int width, int height, int startX, int startY);
+	int kruskalGenerator(int width, int height);
 };
