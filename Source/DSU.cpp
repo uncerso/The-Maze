@@ -16,9 +16,11 @@ int DSU::find(int num) {
 void DSU::merge(int first, int second) {
 	first = find(first);
 	second = find(second);
-	if (rank[first] < rank[second])
-		std::swap(first, second);
-	else if (rank[first] == rank[second])
-		++rank[first];
-	parents[second] = first;
+	if (first != second) {
+		if (rank[first] < rank[second])
+			std::swap(first, second);
+		else if (rank[first] == rank[second])
+			++rank[first];
+		parents[second] = first;
+	}
 }
