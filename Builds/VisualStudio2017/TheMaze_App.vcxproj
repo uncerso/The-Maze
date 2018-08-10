@@ -1355,6 +1355,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\SystemHeapStack.h"/>
     <ClInclude Include="..\..\Source\DSU.h"/>
     <ClInclude Include="..\..\Source\Triple.h"/>
     <ClInclude Include="..\..\Source\Menu.h"/>

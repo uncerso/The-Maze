@@ -5,13 +5,13 @@ struct Pair {
 	Pair() = default;
 
 	template <class U1, class U2>
-	Pair(U1 && fst, U2 && snd);
+	constexpr Pair(U1 && fst, U2 && snd);
 
-	Pair(Pair && other) = default;
-	Pair(Pair const & other) = default;
+	constexpr Pair(Pair && other) = default;
+	constexpr Pair(Pair const & other) = default;
 
-	Pair & operator = (Pair && other) = default;
-	Pair & operator = (Pair const & other) = default;
+	constexpr Pair & operator = (Pair && other) = default;
+	constexpr Pair & operator = (Pair const & other) = default;
 
 	T1 fst;
 	T2 snd;
@@ -19,13 +19,13 @@ struct Pair {
 
 template<class T1, class T2>
 template<class U1, class U2>
-inline Pair<T1, T2>::Pair(U1 && fst, U2 && snd)
+inline constexpr Pair<T1, T2>::Pair(U1 && fst, U2 && snd)
 	: fst(std::forward<U1>(fst))
 	, snd(std::forward<U2>(snd))
 {}
 
 template <class T1, class T2>
-bool operator < (Pair<T1, T2> const & left, Pair<T1, T2> const & right) noexcept {
+constexpr bool operator < (Pair<T1, T2> const & left, Pair<T1, T2> const & right) noexcept {
 	if (left.fst == right.fst)
 		return left.snd < right.snd;
 	return left.fst < right.fst;

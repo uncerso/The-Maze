@@ -47,7 +47,7 @@ private:
 	std::mutex mt;
 	std::condition_variable cv;
 	std::atomic<bool> shouldTreadEnd;
-	bool flag;
+	std::atomic<bool> flag;
 	std::thread thrd;
 
 	void wakeUpTread();

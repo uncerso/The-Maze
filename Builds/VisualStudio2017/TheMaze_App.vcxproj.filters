@@ -1554,6 +1554,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\SystemHeapStack.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\DSU.h">
       <Filter>TheMaze\Source</Filter>
     </ClInclude>

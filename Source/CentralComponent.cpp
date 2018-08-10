@@ -19,17 +19,19 @@ CentralComponent::CentralComponent()
 	auto const runDrawing = [this] {
 		while (true) {
 			std::unique_lock<std::mutex> lk(mt);
-			cv.wait(lk, [this] {return flag; });
+			cv.wait(lk, [this] {return flag.load(); });
 			flag = false;
 			if (shouldTreadEnd) return;
 			auto const width = getWidth();
 			auto const height = getHeight();
 			auto const pntSize = pointSize.load();
 			mazeGenerator.generate(seed, width / pntSize, height / pntSize, mazeType);
+			std::unique_ptr<Shape> shape(new PixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType), paintingMethod, instantDrawing));
 			openGLDrawer.setBounds(0, 0, static_cast<float>(width) / pntSize, static_cast<float>(height) / pntSize);
 			openGLDrawer.setPointSize(pntSize);
 			openGLDrawer.changeFrequency(delayBetweenFramesGeneration);
-			openGLDrawer.loadData(std::unique_ptr<Shape>(new PixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType), paintingMethod, instantDrawing)));
+			const MessageManagerLock mmLock;
+			openGLDrawer.loadData(move(shape));
 			shouldDraw.setEnabled(true);
 		}
 	};
@@ -105,22 +107,44 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		b2Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::sidewinder; };
 
 		auto b3Alg = make_unique<TextButton>();
-		b3Alg->setButtonText("noname");
-		b3Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
+		b3Alg->setButtonText("Prim's");
+		b3Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
 		b3Alg->setRadioGroupId(radioGroupID);
 		b3Alg->setClickingTogglesState(true);
-		b3Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::noname; };
+		b3Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::prime; };
 
 		auto b4Alg = make_unique<TextButton>();
 		b4Alg->setButtonText("Kruskal's");
-		b4Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
+		b4Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b4Alg->setRadioGroupId(radioGroupID);
 		b4Alg->setClickingTogglesState(true);
 		b4Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::kruskal; };
 
-		b1Alg->setToggleState(true, NotificationType::sendNotificationSync);
+		auto b5Alg = make_unique<TextButton>();
+		b5Alg->setButtonText("Recursive backtracker");
+		b5Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
+		b5Alg->setRadioGroupId(radioGroupID);
+		b5Alg->setClickingTogglesState(true);
+		b5Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::recursiveBacktracker; };
 
-		menu->addGroup(move(lbAlg), move(b1Alg), move(b2Alg), move(b3Alg), move(b4Alg));
+		auto b6Alg = make_unique<TextButton>();
+		b6Alg->setButtonText("Recursive division");
+		b6Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
+		b6Alg->setRadioGroupId(radioGroupID);
+		b6Alg->setClickingTogglesState(true);
+		b6Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::recursiveDivision; };
+
+		auto b7Alg = make_unique<TextButton>();
+		b7Alg->setButtonText("Hunt-and-Kill");
+		b7Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
+		b7Alg->setRadioGroupId(radioGroupID);
+		b7Alg->setClickingTogglesState(true);
+		b7Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::huntAndKill; };
+
+		b4Alg->setToggleState(true, NotificationType::sendNotificationSync);
+
+		menu->addGroup(move(lbAlg), move(b1Alg), move(b2Alg), move(b3Alg));
+		menu->addGroup(move(b4Alg), move(b5Alg), move(b6Alg), move(b7Alg));
 		menu->addSeparatorLines();
 	}
 	//=========================================================================
@@ -151,7 +175,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		b3DrawType->setClickingTogglesState(true);
 		b3DrawType->onClick = [this] {drawType = MazeGenerator::DrawType::withWalls; };
 
-		b2DrawType->setToggleState(true, NotificationType::sendNotificationSync);
+		b3DrawType->setToggleState(true, NotificationType::sendNotificationSync);
 
 		menu->addGroup(move(lbDrawType), move(b1DrawType), move(b2DrawType), move(b3DrawType));
 		menu->addSeparatorLines();
