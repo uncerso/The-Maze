@@ -27,6 +27,10 @@ void MazeGenerator::dump() const {
 	out << "width: " << lastWidth << '\n';
 	out << "height: " << lastHeight << '\n';
 	out << "maze type:" << static_cast<int>(lastMazeType) << '\n';
+	out << "wall: #\n";
+	out << "marked wall: *\n";
+	out << "interior: -\n";
+	out << "marked interior: ~\n";
 	for (auto const & row : matrix) {
 		for (auto const & el : row) {
 			char c = ' ';
@@ -91,7 +95,13 @@ void MazeGenerator::generate(unsigned int seed, int width, int height, MazeType 
 		case MazeType::huntAndKill:
 			huntAndKillGenerator(width, height);
 			break;
-		default: break;
+		case MazeType::eller:
+			ellerGenerator(width, height);
+			break;
+		default:
+			// unknown algorithm
+			assert(false);
+			break;
 	}
 	evenEdgeFiller(width, height);
 	amountOfInteriors = calculateAmountOfInteriors(width, height);
@@ -502,4 +512,55 @@ void MazeGenerator::huntAndKillGenerator(int width, int height) {
 		}
 	}
 
+}
+
+void MazeGenerator::ellerGenerator(int width, int height) {
+	width -= !(width & 1);
+	height -= !(height & 1);
+
+	const int rowSize = (width + 1) >> 1;
+	DSU sets(rowSize);
+	for (int y = 0; y < height - 2; y += 2) {
+		DSU newSets(rowSize);
+		std::vector<int> mapper(rowSize, -1); // [root of last set] -> {eny element of new set, which has interior from downside}
+		for (int i = 0; i < rowSize - 1; ++i) {
+			auto leftSet = sets.find(i);
+			auto rightSet = sets.find(i + 1);
+			if (leftSet != rightSet && (randomGenerator() & 1)) {
+				matrix[y][(i << 1) + 1] = State::interior; // remove wall
+				sets.merge(leftSet, rightSet);
+			}
+		}
+
+		for (int i = 0; i < rowSize; ++i)
+			if (randomGenerator() & 1) {
+				matrix[y + 1][i << 1] = State::interior;
+				auto & el = mapper[sets.find(i)];
+				if (el != -1)
+					newSets.merge(i, el);
+				el = i;
+			}
+
+		for (int i = 0; i < rowSize; ++i) {
+			matrix[y][i << 1] = State::interior;
+			auto &el = mapper[sets.find(i)];
+			if (el == -1) {
+				matrix[y + 1][i << 1] = State::interior;
+				el = i;
+			}
+		}
+
+		sets = std::move(newSets);
+	}
+
+	for (int i = 0; i < rowSize - 1; ++i) {
+		matrix[height - 1][i << 1] = State::interior;
+		auto leftSet = sets.find(i);
+		auto rightSet = sets.find(i + 1);
+		if (leftSet != rightSet) {
+			matrix[height - 1][(i << 1) + 1] = State::interior; // remove wall
+			sets.merge(leftSet, rightSet);
+		}
+	}
+	matrix[height - 1][width - 1] = State::interior;
 }

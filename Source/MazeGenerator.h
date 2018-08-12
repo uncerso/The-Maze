@@ -5,7 +5,7 @@
 
 class MazeGenerator {
 public:
-	enum class MazeType { binaryTree, sidewinder, prime, kruskal, recursiveBacktracker, recursiveDivision, huntAndKill };
+	enum class MazeType { binaryTree, sidewinder, prime, kruskal, recursiveBacktracker, recursiveDivision, huntAndKill, eller };
 	enum class DrawType { oneFrame, wave, withWalls };
 
 	MazeGenerator();
@@ -51,6 +51,7 @@ private:
 	void recursiveBacktrackerGenerator();
 	void recursiveDivisionGenerator(int width, int height);
 	void huntAndKillGenerator(int width, int height);
+	void ellerGenerator(int width, int height);
 };
 
 template<class T>

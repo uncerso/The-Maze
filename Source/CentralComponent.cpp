@@ -38,7 +38,7 @@ CentralComponent::CentralComponent()
 	thrd = std::thread(runDrawing);
 
 	shouldDraw.setButtonText("Draw");
-	shouldDraw.onClick = [this] { shouldDraw.setEnabled(false); wakeUpTread(); };
+	shouldDraw.onClick = [this] { shouldDraw.setEnabled(false); menuSidePanel.showOrHide(false); wakeUpTread(); };
 	addAndMakeVisible(shouldDraw);
 
 	auto configReturn = configureMenu();
@@ -101,28 +101,28 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 
 		auto b2Alg = make_unique<TextButton>();
 		b2Alg->setButtonText("Sidewinder");
-		b2Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
+		b2Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
 		b2Alg->setRadioGroupId(radioGroupID);
 		b2Alg->setClickingTogglesState(true);
 		b2Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::sidewinder; };
 
 		auto b3Alg = make_unique<TextButton>();
 		b3Alg->setButtonText("Prim's");
-		b3Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
+		b3Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b3Alg->setRadioGroupId(radioGroupID);
 		b3Alg->setClickingTogglesState(true);
 		b3Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::prime; };
 
 		auto b4Alg = make_unique<TextButton>();
 		b4Alg->setButtonText("Kruskal's");
-		b4Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnRight);
+		b4Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b4Alg->setRadioGroupId(radioGroupID);
 		b4Alg->setClickingTogglesState(true);
 		b4Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::kruskal; };
 
 		auto b5Alg = make_unique<TextButton>();
 		b5Alg->setButtonText("Recursive backtracker");
-		b5Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft | TextButton::ConnectedEdgeFlags::ConnectedOnRight);
+		b5Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnRight);
 		b5Alg->setRadioGroupId(radioGroupID);
 		b5Alg->setClickingTogglesState(true);
 		b5Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::recursiveBacktracker; };
@@ -141,10 +141,18 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		b7Alg->setClickingTogglesState(true);
 		b7Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::huntAndKill; };
 
+		auto b8Alg = make_unique<TextButton>();
+		b8Alg->setButtonText("Eller's");
+		b8Alg->setConnectedEdges(TextButton::ConnectedEdgeFlags::ConnectedOnLeft);
+		b8Alg->setRadioGroupId(radioGroupID);
+		b8Alg->setClickingTogglesState(true);
+		b8Alg->onClick = [this] {mazeType = MazeGenerator::MazeType::eller; };
+
 		b4Alg->setToggleState(true, NotificationType::sendNotificationSync);
 
-		menu->addGroup(move(lbAlg), move(b1Alg), move(b2Alg), move(b3Alg));
-		menu->addGroup(move(b4Alg), move(b5Alg), move(b6Alg), move(b7Alg));
+		menu->addGroup(move(lbAlg), move(b1Alg), move(b2Alg));
+		menu->addGroup(move(b3Alg), move(b4Alg), move(b8Alg));
+		menu->addGroup(move(b5Alg), move(b6Alg), move(b7Alg));
 		menu->addSeparatorLines();
 	}
 	//=========================================================================
