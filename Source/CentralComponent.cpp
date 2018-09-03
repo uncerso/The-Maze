@@ -1,3 +1,4 @@
+#include <cmath>
 #include "CentralComponent.h"
 #include "Control.h"
 #include "PixelShape.h"
@@ -12,6 +13,9 @@ CentralComponent::CentralComponent()
 	, shouldTreadEnd(false)
 	, flag(false)
 {
+
+	menuSidePanel.setShadowWidth(0);
+
 	menuButton.setButtonText("menu");
 	menuButton.onClick = [this] {menuSidePanel.showOrHide(!menuSidePanel.isPanelShowing()); };
 	addAndMakeVisible(menuButton);
@@ -22,8 +26,9 @@ CentralComponent::CentralComponent()
 			cv.wait(lk, [this] {return flag.load(); });
 			flag = false;
 			if (shouldTreadEnd) return;
-			auto const width = getWidth();
-			auto const height = getHeight();
+			auto const renderingScale = openGLContext.getRenderingScale();
+			auto width = static_cast<int>(std::ceil(getWidth() * renderingScale));
+			auto height = static_cast<int>(std::ceil(getHeight() * renderingScale));
 			auto const pntSize = pointSize.load();
 			mazeGenerator.generate(seed, width / pntSize, height / pntSize, mazeType);
 			std::unique_ptr<Shape> shape(new PixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType), paintingMethod, instantDrawing));
@@ -68,9 +73,10 @@ void CentralComponent::wakeUpTread() {
 void CentralComponent::paint(Graphics&) {}
 
 void CentralComponent::resized() {
+	auto const renderingScale = static_cast<float>(openGLContext.getRenderingScale());
 	auto const width = getWidth();
 	auto const height = getHeight();
-	openGLDrawer.setBounds(0, 0, static_cast<float>(width) / pointSize, static_cast<float>(height) / pointSize);
+	openGLDrawer.setBounds(0, 0, std::ceil(width * renderingScale) / pointSize, std::ceil(height * renderingScale) / pointSize);
 	shouldCallWhenResized();
 	menuButton.setBounds(0, 0, static_cast<int>(width * 0.05), static_cast<int>(height * 0.05));
 	shouldDraw.setBounds(static_cast<int>(width * 0.05), 0, static_cast<int>(width * 0.10), static_cast<int>(height * 0.05));
@@ -250,7 +256,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		sPaintSpeed->setTextValueSuffix(" pixels");
 		sPaintSpeed->onValueChange = [this, self = sPaintSpeed.get()]{ pointSize = static_cast<unsigned int>(self->getValue()); };
 		sPaintSpeed->setValue(pointSize);
-		functionsForReturn.emplace_back([this, sPS = sPaintSpeed.get()]{ sPS->setRange(1, min(getWidth(), getHeight()) / 7, 1); pointSize = static_cast<unsigned int>(sPS->getValue()); });
+		functionsForReturn.emplace_back([this, sPS = sPaintSpeed.get()]{ sPS->setRange(1, min(getWidth(), getHeight()) * openGLContext.getRenderingScale() / 7, 1); pointSize = static_cast<unsigned int>(sPS->getValue()); });
 
 		menu->addGroup(move(lbPaintSpeed));
 		menu->addGroup(move(sPaintSpeed));
@@ -276,7 +282,16 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		menu->addGroup(move(lbDrawingSpeed));
 		menu->addGroup(move(sDrawingSpeed));
 		menu->addGroup(move(bDrawingSpeed));
+		menu->addSeparatorLines();
 	}
-
+	//=========================================================================
+	{
+		auto lbResolution = make_unique<Label>();
+		functionsForReturn.emplace_back([this, lb = lbResolution.get()] {
+			auto const renderingScale = openGLContext.getRenderingScale(); 
+			lb->setText("Field size: " + String(std::ceil(getWidth() * renderingScale)) + " x " + String(std::ceil(getHeight() * renderingScale)), dontSendNotification);
+			});
+		menu->addGroup(std::move(lbResolution));
+	}
 	return { move(menu),[funcs = move(functionsForReturn)] {for (auto & foo : funcs) foo(); } }; // menu && shouldCallWhenResized
 }
