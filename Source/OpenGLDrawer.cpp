@@ -104,16 +104,14 @@ void OpenGLDrawer::renderOpenGL() {
 
 void OpenGLDrawer::createShaders() {
 	vertexShaderSource =
-		"#version 330\n"
 		"attribute vec2 position;\n"
 		"uniform vec2 widthAndHeightToNormalize;\n"
 		"uniform vec2 shiftsFromLeftBottomCorner;\n"
 		"void main(){\n"
-		"gl_Position=vec4(2 * position.x / widthAndHeightToNormalize.x - 1 + shiftsFromLeftBottomCorner.x, 2 * position.y / widthAndHeightToNormalize.y - 1 + shiftsFromLeftBottomCorner.y, 0.0f, 1.0f);\n"
+		"gl_Position=vec4(2.0f * position.x / widthAndHeightToNormalize.x - 1.0f + shiftsFromLeftBottomCorner.x, 2.0f * position.y / widthAndHeightToNormalize.y - 1.0f + shiftsFromLeftBottomCorner.y, 0.0f, 1.0f);\n"
 		"}\0;";
 
 	fragmentShaderSource =
-		"#version 330\n"
 		"uniform vec3 color;\n"
 		"void main(){\n"
 		"gl_FragColor=vec4(color, 1.0f);\n"

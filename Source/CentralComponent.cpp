@@ -1,6 +1,5 @@
 #include <cmath>
 #include "CentralComponent.h"
-#include "Control.h"
 #include "PixelShape.h"
 
 CentralComponent::CentralComponent()
@@ -256,7 +255,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 		sPaintSpeed->setTextValueSuffix(" pixels");
 		sPaintSpeed->onValueChange = [this, self = sPaintSpeed.get()]{ pointSize = static_cast<unsigned int>(self->getValue()); };
 		sPaintSpeed->setValue(pointSize);
-		functionsForReturn.emplace_back([this, sPS = sPaintSpeed.get()]{ sPS->setRange(1, min(getWidth(), getHeight()) * openGLContext.getRenderingScale() / 7, 1); pointSize = static_cast<unsigned int>(sPS->getValue()); });
+		functionsForReturn.emplace_back([this, sPS = sPaintSpeed.get()]{ sPS->setRange(1, std::min(getWidth(), getHeight()) * openGLContext.getRenderingScale() / 7, 1); pointSize = static_cast<unsigned int>(sPS->getValue()); });
 
 		menu->addGroup(move(lbPaintSpeed));
 		menu->addGroup(move(sPaintSpeed));
@@ -291,7 +290,7 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 			auto const renderingScale = openGLContext.getRenderingScale(); 
 			lb->setText("Field size: " + String(std::ceil(getWidth() * renderingScale)) + " x " + String(std::ceil(getHeight() * renderingScale)), dontSendNotification);
 			});
-		menu->addGroup(std::move(lbResolution));
+		menu->addGroup(move(lbResolution));
 	}
 	return { move(menu),[funcs = move(functionsForReturn)] {for (auto & foo : funcs) foo(); } }; // menu && shouldCallWhenResized
 }

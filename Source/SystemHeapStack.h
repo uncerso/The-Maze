@@ -28,7 +28,7 @@ private:
 template<class Data>
 template<
 	class Func,
-	class = std::enable_if_t<std::is_constructible_v<typename SystemHeapStack::RecursiveFunction, Func> >
+	class
 >
 inline SystemHeapStack<Data>::SystemHeapStack(Func && recursiveFunction)
 	: func(std::forward<Func>(recursiveFunction))
@@ -37,7 +37,7 @@ inline SystemHeapStack<Data>::SystemHeapStack(Func && recursiveFunction)
 template<class Data>
 template <
 	class Data2,
-	class = std::enable_if_t<std::is_constructible_v<Data, Data2> >
+	class
 >
 inline void SystemHeapStack<Data>::call(Data2 && data) {
 	stack.push(std::forward<Data2>(data));

@@ -7,6 +7,8 @@
 #include "Pair.h"
 #include <random>
 #include <mutex>
+#include <thread>
+#include <condition_variable>
 
 class CentralComponent
 	: public Component

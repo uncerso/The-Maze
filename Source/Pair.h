@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 template <class T1, class T2>
 struct Pair {
