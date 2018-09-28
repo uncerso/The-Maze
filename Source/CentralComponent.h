@@ -39,6 +39,7 @@ private:
 	std::function<void()> shouldCallWhenResized;
 
 	//Configs
+	std::atomic<OpenGLDrawer::ShaderMode> shaderMode;
 	std::atomic<MazeGenerator::MazeType> mazeType;
 	std::atomic<MazeGenerator::DrawType> drawType;
 	std::atomic<bool> instantDrawing;

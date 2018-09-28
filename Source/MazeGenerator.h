@@ -13,7 +13,7 @@ public:
 
 	void generate(unsigned int seed, int width, int height, MazeType mazeType);
 
-	PointsToDraw getMazeAsPointsToDraw(DrawType drawType, int startX = 0, int startY = 0) const;
+	PointsToDraw getMazeAsPointsToDraw(DrawType drawType, unsigned int const vertSize, int startX = 0, int startY = 0) const;
 
 #ifndef NDEBUG
 	void dump() const;
@@ -38,8 +38,8 @@ private:
 
 	void resizeMatrix(int width, int height);
 
-	void oneFramePainting(std::vector<float> & data, std::vector<int> & intervals) const;
-	void wavePainting(int startX, int startY, std::vector<float> & data, std::vector<int> & intervals, bool withWalls) const;
+	void oneFramePainting(std::vector<float> & data, std::vector<int> & intervals, unsigned int const vertSize) const;
+	void wavePainting(int startX, int startY, std::vector<float> & data, std::vector<int> & intervals, bool withWalls, unsigned int const vertSize) const;
 
 	void evenEdgeFiller(int width, int height);
 	int calculateAmountOfInteriors(int width, int height) const noexcept;

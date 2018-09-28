@@ -149,6 +149,7 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\DensePixelShape.cpp"/>
     <ClCompile Include="..\..\Source\DSU.cpp"/>
     <ClCompile Include="..\..\Source\Menu.cpp"/>
     <ClCompile Include="..\..\Source\PointsToDraw.cpp"/>
@@ -1355,6 +1356,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\DensePixelShape.h"/>
     <ClInclude Include="..\..\Source\SystemHeapStack.h"/>
     <ClInclude Include="..\..\Source\DSU.h"/>
     <ClInclude Include="..\..\Source\Triple.h"/>

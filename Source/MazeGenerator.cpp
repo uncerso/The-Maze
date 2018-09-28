@@ -74,34 +74,34 @@ void MazeGenerator::generate(unsigned int seed, int width, int height, MazeType 
 	resizeMatrix(width, height);
 	fillMatrix();
 	switch (mazeType) {
-		case MazeType::binaryTree:
-			binaryTreeGenerator(width, height);
-			break;
-		case MazeType::sidewinder:
-			sidewinderGenerator(width, height);
-			break;
-		case MazeType::prime:
-			primGenerator(0, 0);
-			break;
-		case MazeType::kruskal:
-			kruskalGenerator(width, height);
-			break;
-		case MazeType::recursiveBacktracker:
-			recursiveBacktrackerGenerator();
-			break;
-		case MazeType::recursiveDivision:
-			recursiveDivisionGenerator(width, height);
-			break;
-		case MazeType::huntAndKill:
-			huntAndKillGenerator(width, height);
-			break;
-		case MazeType::eller:
-			ellerGenerator(width, height);
-			break;
-		default:
-			// unknown algorithm
-			assert(false);
-			break;
+	case MazeType::binaryTree:
+		binaryTreeGenerator(width, height);
+		break;
+	case MazeType::sidewinder:
+		sidewinderGenerator(width, height);
+		break;
+	case MazeType::prime:
+		primGenerator(0, 0);
+		break;
+	case MazeType::kruskal:
+		kruskalGenerator(width, height);
+		break;
+	case MazeType::recursiveBacktracker:
+		recursiveBacktrackerGenerator();
+		break;
+	case MazeType::recursiveDivision:
+		recursiveDivisionGenerator(width, height);
+		break;
+	case MazeType::huntAndKill:
+		huntAndKillGenerator(width, height);
+		break;
+	case MazeType::eller:
+		ellerGenerator(width, height);
+		break;
+	default:
+		// unknown algorithm
+		assert(false);
+		break;
 	}
 	evenEdgeFiller(width, height);
 	amountOfInteriors = calculateAmountOfInteriors(width, height);
@@ -132,24 +132,25 @@ void MazeGenerator::evenEdgeFiller(int width, int height) {
 	}
 }
 
-PointsToDraw MazeGenerator::getMazeAsPointsToDraw(DrawType drawType, int startX, int startY) const {
+PointsToDraw MazeGenerator::getMazeAsPointsToDraw(DrawType drawType, unsigned int const vertSize, int startX, int startY) const {
 	assert(lastHeight > 0);
 	assert(lastWidth > 0);
 	assert(insideMatrix(startX, startY));
+	assert(vertSize >= 2);
 
 	std::vector<float> data;
 	std::vector<int> intervals;
 
 	if (drawType == DrawType::oneFrame)
-		oneFramePainting(data, intervals);
+		oneFramePainting(data, intervals, vertSize);
 	else
-		wavePainting(startX, startY, data, intervals, DrawType::withWalls == drawType);
+		wavePainting(startX, startY, data, intervals, DrawType::withWalls == drawType, vertSize);
 
 	return PointsToDraw(std::move(data), std::move(intervals));
 }
 
-void MazeGenerator::oneFramePainting(std::vector<float> & data, std::vector<int> & intervals) const {
-	data.resize(amountOfInteriors << 1);
+void MazeGenerator::oneFramePainting(std::vector<float> & data, std::vector<int> & intervals, unsigned int const vertSize) const {
+	data.resize(amountOfInteriors * vertSize);
 	intervals = { 0, amountOfInteriors };
 	int pos = 0;
 	for (int y = 0, yend = static_cast<int>(matrix.size()); y < yend; ++y)
@@ -157,12 +158,12 @@ void MazeGenerator::oneFramePainting(std::vector<float> & data, std::vector<int>
 			if (matrix[y][x] == State::interior) {
 				data[pos] = static_cast<float>(x);
 				data[pos + 1] = static_cast<float>(y);
-				pos += 2;
+				pos += vertSize;
 			}
 	massert(pos == data.size());
 }
 
-void MazeGenerator::wavePainting(int startX, int startY, std::vector<float> & data, std::vector<int> & intervals, bool withWalls) const {
+void MazeGenerator::wavePainting(int startX, int startY, std::vector<float> & data, std::vector<int> & intervals, bool withWalls, unsigned int const vertSize) const {
 	constexpr char aroundPointsSize = 16;
 	constexpr char aroundPointsSizeShort = 8;
 	constexpr char aroundPoints[aroundPointsSize] = {
@@ -172,7 +173,7 @@ void MazeGenerator::wavePainting(int startX, int startY, std::vector<float> & da
 
 	auto * nonConstThis = const_cast<MazeGenerator *>(this);
 
-	data.resize((withWalls ? matrix.size() * matrix[0].size() * 2 : amountOfInteriors << 1));
+	data.resize((withWalls ? matrix.size() * matrix[0].size() : amountOfInteriors) * vertSize);
 
 	if (matrix[startY][startX] == State::wall)
 		for (int i = 0; i < aroundPointsSize; i += 2) {
@@ -202,8 +203,9 @@ void MazeGenerator::wavePainting(int startX, int startY, std::vector<float> & da
 	while (!queue.empty()) {
 		auto const th = queue.front();
 		queue.pop();
-		data[dataPos++] = static_cast<float>(th.snd);
-		data[dataPos++] = static_cast<float>(th.fst);
+		data[dataPos] = static_cast<float>(th.snd);
+		data[dataPos + 1] = static_cast<float>(th.fst);
+		dataPos += vertSize;
 
 		for (int i = 0, iend = (withWalls ? aroundPointsSize : aroundPointsSizeShort); i < iend; i += 2) {
 			int const newY = th.fst + aroundPoints[i];
@@ -214,20 +216,22 @@ void MazeGenerator::wavePainting(int startX, int startY, std::vector<float> & da
 					nonConstThis->matrix[newY][newX] = State::markedInterior;
 				}
 				else if (withWalls && matrix[newY][newX] == State::wall && (i < aroundPointsSizeShort || aroundBorder(newX, newY))) {
-					data[dataPos++] = static_cast<float>(newX);
-					data[dataPos++] = static_cast<float>(newY);
+					data[dataPos] = static_cast<float>(newX);
+					data[dataPos + 1] = static_cast<float>(newY);
+					dataPos += vertSize;
+
 					nonConstThis->matrix[newY][newX] = State::markedWall;
 				}
 		}
 
 		if (--amountOfPointsLeftOnTheCurrentInterval == 0) {
 			amountOfPointsLeftOnTheCurrentInterval = static_cast<int>(queue.size());
-			intervals.emplace_back(dataPos >> 1);
+			intervals.emplace_back(dataPos / vertSize);
 		}
 	}
 	massert(amountOfPointsLeftOnTheCurrentInterval == 0);
 	massert(dataPos == data.size());
-	intervals.emplace_back(dataPos >> 1);
+	intervals.emplace_back(dataPos / vertSize);
 
 	for (auto & x : nonConstThis->matrix)
 		for (auto & t : x)

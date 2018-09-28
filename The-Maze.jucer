@@ -4,6 +4,10 @@
               version="0.1" cppLanguageStandard="latest">
   <MAINGROUP id="FGMXOG" name="TheMaze">
     <GROUP id="{6A4AFC3A-28E5-4E80-ACA7-FD3D901ADA7D}" name="Source">
+      <FILE id="nIfwY2" name="DensePixelShape.cpp" compile="1" resource="0"
+            file="Source/DensePixelShape.cpp"/>
+      <FILE id="BKbksx" name="DensePixelShape.h" compile="0" resource="0"
+            file="Source/DensePixelShape.h"/>
       <FILE id="RKkFgT" name="SystemHeapStack.h" compile="0" resource="0"
             file="Source/SystemHeapStack.h"/>
       <FILE id="sxUERJ" name="DSU.cpp" compile="1" resource="0" file="Source/DSU.cpp"/>

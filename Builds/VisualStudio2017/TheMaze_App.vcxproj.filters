@@ -226,6 +226,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\DensePixelShape.cpp">
+      <Filter>TheMaze\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\DSU.cpp">
       <Filter>TheMaze\Source</Filter>
     </ClCompile>
@@ -1554,6 +1557,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\DensePixelShape.h">
+      <Filter>TheMaze\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\SystemHeapStack.h">
       <Filter>TheMaze\Source</Filter>
     </ClInclude>

@@ -8,7 +8,7 @@ public:
 	template<
 		class T,
 		class U,
-		typename = std::enable_if_t<
+		class = std::enable_if_t<
 		std::is_same_v<std::vector<float>, std::decay_t<T> >
 		&&
 		std::is_same_v<std::vector<int>, std::decay_t<U> >
@@ -24,6 +24,7 @@ public:
 	Pair<int, int> operator[](unsigned int intervalNumver) const;
 
 	int amountOfIntervals() const noexcept;
+	std::vector<float> & getData() noexcept;
 
 private:
 	std::vector<float> data;
@@ -33,11 +34,7 @@ private:
 template<
 	class T,
 	class U,
-	typename = std::enable_if_t<
-	std::is_same_v<std::vector<float>, std::decay_t<T> >
-	&&
-	std::is_same_v<std::vector<int>, std::decay_t<U> >
-	>
+	class
 >
 PointsToDraw::PointsToDraw(T && data, U && intervals)
 	: data(std::forward<T>(data))

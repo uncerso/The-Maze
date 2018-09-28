@@ -21,7 +21,7 @@ public:
 	unsigned int getRawDataSize() const noexcept override;
 
 private:
-	const PointsToDraw points;
+	PointsToDraw points;
 	std::vector<Color> colors;
 	int iteration;
 };
@@ -31,8 +31,8 @@ PixelShape::PixelShape(PointsToDraw && points, T && func, bool oneFrame)
 	: points(std::move(points))
 	, iteration(0)
 {
-	for (int i = 0, iend = points.amountOfIntervals(); i < iend; ++i)
+	for (int i = 0, iend = this->points.amountOfIntervals(); i < iend; ++i)
 		colors.emplace_back(func(i, iend));
 	if (oneFrame)
-		iteration = points.amountOfIntervals() - 1;
+		iteration = this->points.amountOfIntervals() - 1;
 }

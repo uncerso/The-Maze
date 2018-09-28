@@ -35,6 +35,8 @@ add_library( ${BINARY_NAME}
 
     SHARED
 
+    "../../../Source/DensePixelShape.cpp"
+    "../../../Source/DensePixelShape.h"
     "../../../Source/SystemHeapStack.h"
     "../../../Source/DSU.cpp"
     "../../../Source/DSU.h"
@@ -911,6 +913,7 @@ add_library( ${BINARY_NAME}
     "../../../JuceLibraryCode/JuceHeader.h"
 )
 
+set_source_files_properties("../../../Source/DensePixelShape.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/SystemHeapStack.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/DSU.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Triple.h" PROPERTIES HEADER_FILE_ONLY TRUE)

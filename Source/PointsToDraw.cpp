@@ -13,6 +13,10 @@ int PointsToDraw::amountOfIntervals() const noexcept {
 	return static_cast<int>(intervals.size() - 1);
 }
 
+std::vector<float> & PointsToDraw::getData() noexcept {
+	return data;
+}
+
 unsigned int PointsToDraw::getRawDataSize() const noexcept {
 	return static_cast<unsigned int>(data.size());
 }

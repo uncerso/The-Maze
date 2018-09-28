@@ -1,18 +1,19 @@
 #include <cmath>
 #include "CentralComponent.h"
 #include "PixelShape.h"
+#include "DensePixelShape.h"
 
 CentralComponent::CentralComponent()
 	: Component("Central Component")
 	, openGLDrawer(&openGLContext)
 	, menuSidePanel("Menu", 500, false)
+	, shaderMode(OpenGLDrawer::ShaderMode::dense)
 	, instantDrawing(false)
 	, pointSize(1)
-	, delayBetweenFramesGeneration(7)
+	, delayBetweenFramesGeneration(5)
 	, shouldTreadEnd(false)
 	, flag(false)
 {
-
 	menuSidePanel.setShadowWidth(0);
 
 	menuButton.setButtonText("menu");
@@ -30,12 +31,16 @@ CentralComponent::CentralComponent()
 			auto height = static_cast<int>(std::ceil(getHeight() * renderingScale));
 			auto const pntSize = pointSize.load();
 			mazeGenerator.generate(seed, width / pntSize, height / pntSize, mazeType);
-			std::unique_ptr<Shape> shape(new PixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType), paintingMethod, instantDrawing));
+			std::unique_ptr<Shape> shape;
+			if (shaderMode == OpenGLDrawer::ShaderMode::sparse)
+				shape.reset(new PixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType, 2), paintingMethod, instantDrawing));
+			else
+				shape.reset(new DensePixelShape(mazeGenerator.getMazeAsPointsToDraw(drawType, 5), paintingMethod, instantDrawing));
 			openGLDrawer.setBounds(0, 0, static_cast<float>(width) / pntSize, static_cast<float>(height) / pntSize);
 			openGLDrawer.setPointSize(pntSize);
 			openGLDrawer.changeFrequency(delayBetweenFramesGeneration);
 			const MessageManagerLock mmLock;
-			openGLDrawer.loadData(move(shape));
+			openGLDrawer.loadData(move(shape), shaderMode);
 			shouldDraw.setEnabled(true);
 		}
 	};
@@ -286,11 +291,16 @@ Pair<std::unique_ptr<Menu>, std::function<void()> > CentralComponent::configureM
 	//=========================================================================
 	{
 		auto lbResolution = make_unique<Label>();
-		functionsForReturn.emplace_back([this, lb = lbResolution.get()] {
-			auto const renderingScale = openGLContext.getRenderingScale(); 
+		functionsForReturn.emplace_back([this, lb = lbResolution.get()]{
+			auto const renderingScale = openGLContext.getRenderingScale();
 			lb->setText("Field size: " + String(std::ceil(getWidth() * renderingScale)) + " x " + String(std::ceil(getHeight() * renderingScale)), dontSendNotification);
 			});
-		menu->addGroup(move(lbResolution));
+		auto bShaderMode = make_unique<TextButton>();
+		bShaderMode->setButtonText("GPU memory saving mode\n(not recommended)");
+		bShaderMode->setClickingTogglesState(true);
+		bShaderMode->onClick = [this, self = bShaderMode.get()]{ shaderMode = (self->getToggleState() ? OpenGLDrawer::ShaderMode::sparse : OpenGLDrawer::ShaderMode::dense); };
+
+		menu->addGroup(move(lbResolution), move(bShaderMode));
 	}
 	return { move(menu),[funcs = move(functionsForReturn)] {for (auto & foo : funcs) foo(); } }; // menu && shouldCallWhenResized
 }
