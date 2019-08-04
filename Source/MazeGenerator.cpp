@@ -1,4 +1,4 @@
-#pragma comment(linker, "/STACK:1000000000")
+// #pragma comment(linker, "/STACK:1000000000")
 #include "MazeGenerator.h"
 #include "Triple.h"
 #include "DSU.h"
@@ -210,7 +210,7 @@ void MazeGenerator::wavePainting(int startX, int startY, std::vector<float> & da
 		for (int i = 0, iend = (withWalls ? aroundPointsSize : aroundPointsSizeShort); i < iend; i += 2) {
 			int const newY = th.fst + aroundPoints[i];
 			int const newX = th.snd + aroundPoints[i + 1];
-			if (insideMatrix(newX, newY))
+			if (insideMatrix(newX, newY)) {
 				if (matrix[newY][newX] == State::interior && i < aroundPointsSizeShort) {
 					queue.push({ newY, newX });
 					nonConstThis->matrix[newY][newX] = State::markedInterior;
@@ -222,6 +222,7 @@ void MazeGenerator::wavePainting(int startX, int startY, std::vector<float> & da
 
 					nonConstThis->matrix[newY][newX] = State::markedWall;
 				}
+			}
 		}
 
 		if (--amountOfPointsLeftOnTheCurrentInterval == 0) {

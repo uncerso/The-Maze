@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="mcOLQp" name="TheMaze" projectType="guiapp" jucerVersion="5.3.2"
+<JUCERPROJECT id="mcOLQp" name="TheMaze" projectType="guiapp" jucerVersion="5.4.3"
               version="0.1" cppLanguageStandard="latest">
   <MAINGROUP id="FGMXOG" name="TheMaze">
     <GROUP id="{6A4AFC3A-28E5-4E80-ACA7-FD3D901ADA7D}" name="Source">
@@ -63,7 +63,7 @@
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" optimisation="3" linkTimeOptimisation="1"/>
+        <CONFIGURATION isDebug="1" name="Release" optimisation="3" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../JUCE/modules"/>
@@ -102,6 +102,7 @@
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS buildEnabled="0"/>
+    <LINUX/>
   </LIVE_SETTINGS>
   <JUCEOPTIONS/>
 </JUCERPROJECT>

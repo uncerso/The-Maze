@@ -9,6 +9,7 @@ MainForm::MainForm()
 	    allButtons)
 	, laf(new LookAndFeel_V4(LookAndFeel_V4::getMidnightColourScheme()))
 {
+	setUsingNativeTitleBar(true);
 	setLookAndFeel(laf.get());
 	laf->setColour(Slider::ColourIds::backgroundColourId, findColour(Slider::ColourIds::trackColourId).withAlpha(0.2f));
 	centreWithSize(static_cast<int>(getParentWidth()*0.9), static_cast<int>(getParentHeight()*0.9));

@@ -33,6 +33,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "TheMaze";
+    const char* const  companyName    = "";
     const char* const  versionString  = "0.1";
     const int          versionNumber  = 0x100;
 }

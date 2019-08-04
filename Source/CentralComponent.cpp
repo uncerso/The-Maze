@@ -14,9 +14,11 @@ CentralComponent::CentralComponent()
 	, shouldTreadEnd(false)
 	, flag(false)
 {
+	constexpr auto button_alpha = 0.7;
 	menuSidePanel.setShadowWidth(0);
 
 	menuButton.setButtonText("menu");
+	menuButton.setAlpha(button_alpha);
 	menuButton.onClick = [this] {menuSidePanel.showOrHide(!menuSidePanel.isPanelShowing()); };
 	addAndMakeVisible(menuButton);
 
@@ -47,6 +49,7 @@ CentralComponent::CentralComponent()
 	thrd = std::thread(runDrawing);
 
 	shouldDraw.setButtonText("Draw");
+	shouldDraw.setAlpha(button_alpha);
 	shouldDraw.onClick = [this] { shouldDraw.setEnabled(false); menuSidePanel.showOrHide(false); wakeUpTread(); };
 	addAndMakeVisible(shouldDraw);
 
